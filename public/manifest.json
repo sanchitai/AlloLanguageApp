@@ -1,0 +1,24 @@
+{
+  "name": "Allo — Learn Quebec French",
+  "short_name": "Allo",
+  "description": "Scenario-based Quebec French ↔ English language learning PWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F7",
+  "theme_color": "#DCEEFB",
+  "orientation": "portrait-primary",
+  "lang": "en-CA",
+  "categories": ["education", "language"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/dashboard.png", "sizes": "430x932", "type": "image/png", "form_factor": "narrow" }
+  ],
+  "shortcuts": [
+    { "name": "Buddy Mode", "short_name": "Buddy", "description": "Open live translator", "url": "/buddy", "icons": [{ "src": "/icons/shortcut-buddy.png", "sizes": "96x96" }] },
+    { "name": "Flashcards", "short_name": "Cards", "description": "Practice flashcards", "url": "/flashcards/current", "icons": [{ "src": "/icons/shortcut-cards.png", "sizes": "96x96" }] }
+  ]
+}
