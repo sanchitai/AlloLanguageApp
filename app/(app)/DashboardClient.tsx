@@ -7,252 +7,243 @@ import type { Database } from '@/types/database'
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Scenario = Database['public']['Tables']['scenarios']['Row']
 
-const CATEGORY_COLORS: Record<string, { bg: string; ink: string }> = {
-  daycare:     { bg: '#DCEEFB', ink: '#1A5FA8' },
-  medical:     { bg: '#FDE8EF', ink: '#B03060' },
-  work:        { bg: '#FEF7D0', ink: '#A07A10' },
-  social:      { bg: '#D8F5E8', ink: '#1A6B45' },
-  food:        { bg: '#FEEBD0', ink: '#B05A10' },
-  transport:   { bg: '#D0F4F4', ink: '#1A7A7A' },
-  services:    { bg: '#EBEBEB', ink: '#5A5A5A' },
-  custom:      { bg: '#EDE8FB', ink: '#5B3DAA' },
-}
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  daycare: '👶', medical: '🏥', work: '💼', social: '🏠',
-  food: '🍽️', transport: '🚌', services: '🔧', custom: '✨',
+const CATEGORY_COLORS: Record<string, { bg: string; ink: string; emoji: string }> = {
+  daycare:   { bg: '#E1F5FE', ink: '#0288D1', emoji: '👶' },
+  medical:   { bg: '#FCE4EC', ink: '#C2185B', emoji: '🏥' },
+  work:      { bg: '#FFF8E1', ink: '#F57F17', emoji: '💼' },
+  social:    { bg: '#E8F5E9', ink: '#2E7D32', emoji: '🏠' },
+  food:      { bg: '#FFF3E0', ink: '#E65100', emoji: '🍽️' },
+  transport: { bg: '#E0F7FA', ink: '#00695C', emoji: '🚌' },
+  services:  { bg: '#F3E5F5', ink: '#6A1B9A', emoji: '🔧' },
+  custom:    { bg: '#EDE7FF', ink: '#4527A0', emoji: '✨' },
 }
 
 function getGreeting() {
   const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 18) return 'Good afternoon'
-  return 'Good evening'
+  if (h < 12) return 'Bonjour'
+  if (h < 18) return 'Bon après-midi'
+  return 'Bonsoir'
 }
 
 export default function DashboardClient({ profile, scenarios, learnedCount, isGuest = false }: {
-  profile: Profile
-  scenarios: Scenario[]
-  learnedCount: number
-  isGuest?: boolean
+  profile: Profile; scenarios: Scenario[]; learnedCount: number; isGuest?: boolean
 }) {
   const ringRef = useRef<SVGCircleElement>(null)
-  const today = new Date().toLocaleDateString('en-CA')
-  const isStreakToday = profile.streak_last_date === today
+  const firstName = profile.display_name?.split(' ')[0] ?? 'there'
+  const dailyDone = learnedCount % (profile.daily_goal || 10)
+  const dailyPct = Math.min((dailyDone / (profile.daily_goal || 10)) * 100, 100)
 
-  // Animate goal ring on mount
   useEffect(() => {
-    const target = Math.min((profile.daily_goal > 0 ? (learnedCount % profile.daily_goal) / profile.daily_goal : 0), 1)
-    const circ = 2 * Math.PI * 27
+    const circ = 2 * Math.PI * 24
     if (ringRef.current) {
       setTimeout(() => {
         if (ringRef.current) {
-          ringRef.current.style.strokeDashoffset = String(circ - target * circ)
+          ringRef.current.style.strokeDashoffset = String(circ - (dailyPct / 100) * circ)
         }
       }, 400)
     }
-  }, [learnedCount, profile.daily_goal])
+  }, [dailyPct])
 
   const activeScenario = scenarios[0]
-  const firstName = profile.display_name?.split(' ')[0] ?? 'there'
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100%' }}>
+    <div style={{ minHeight: '100%', background: 'var(--bg)' }}>
 
-      {/* Status bar */}
-      <div style={{ background: 'var(--surface)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 20px 0', fontSize: 15, fontWeight: 600, position: 'sticky', top: 0, zIndex: 10 }}>
-        <span>{new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><rect x="0" y="9" width="2.5" height="7" rx="1" fill="currentColor"/><rect x="4" y="6" width="2.5" height="10" rx="1" fill="currentColor"/><rect x="8" y="3" width="2.5" height="13" rx="1" fill="currentColor"/></svg>
-          <svg viewBox="0 0 22 12" fill="none" width="20" height="12"><rect x="0.5" y="0.5" width="19" height="11" rx="3.5" stroke="currentColor"/><rect x="2" y="2" width="14" height="8" rx="2" fill="currentColor"/></svg>
-        </div>
-      </div>
+      {/* Sky header */}
+      <div style={{
+        background: 'linear-gradient(160deg, #C8E8FF 0%, #D8F0FF 60%, #EEF7FF 100%)',
+        padding: '52px 20px 28px',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        {/* Cloud blobs */}
+        <div style={{ position: 'absolute', top: -50, right: -40, width: 220, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.50)', filter: 'blur(3px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: 20, left: -60, width: 180, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.35)', filter: 'blur(3px)', pointerEvents: 'none' }} />
 
-      {/* Top bar */}
-      <div style={{ background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px 14px', position: 'sticky', top: 44, zIndex: 10 }}>
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>{getGreeting()}</div>
-          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.02em', lineHeight: '32px' }}>
-            Bonjour, {firstName}<span style={{ color: 'var(--maple)' }}>.</span>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(26,46,59,0.55)', marginBottom: 4 }}>{getGreeting()},</div>
+            <div style={{ fontSize: 30, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-0.02em', lineHeight: '34px' }}>
+              {isGuest ? 'Welcome to Allo' : firstName + '!'}
+            </div>
+            <div style={{ fontSize: 14, color: 'var(--ink-2)', marginTop: 4, fontWeight: 600 }}>
+              {isGuest ? 'Try it out — no account needed' : 'Ready to practice today?'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {/* Streak */}
+            {!isGuest && (
+              <Link href="/profile" style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                background: 'rgba(255,255,255,0.80)', borderRadius: 'var(--r-full)',
+                padding: '6px 12px', textDecoration: 'none',
+                boxShadow: '0 2px 10px rgba(26,46,59,0.08)',
+              }}>
+                <span style={{ fontSize: 16 }}>🔥</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)' }}>{profile.streak_days}</span>
+              </Link>
+            )}
+            {/* XP */}
+            {!isGuest && (
+              <Link href="/profile" style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                background: 'rgba(255,255,255,0.80)', borderRadius: 'var(--r-full)',
+                padding: '6px 12px', textDecoration: 'none',
+                boxShadow: '0 2px 10px rgba(26,46,59,0.08)',
+              }}>
+                <span style={{ fontSize: 14 }}>⚡</span>
+                <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)' }}>{profile.xp_total}</span>
+              </Link>
+            )}
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <Link href="/profile" style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            background: 'var(--tile-yellow)', borderRadius: 'var(--r-full)',
-            padding: '6px 12px', fontSize: 13, fontWeight: 700,
-            color: 'var(--tile-yellow-ink)', textDecoration: 'none',
-            boxShadow: 'var(--sh-card)',
-          }}>
-            <span>🔥</span><span>{profile.streak_days}</span>
-          </Link>
-          <Link href="/profile" style={{
-            width: 38, height: 38, borderRadius: '50%',
-            background: 'var(--tile-blue)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: 'var(--sh-card)', textDecoration: 'none',
-          }}>
-            <svg viewBox="0 0 22 22" fill="none" width="22" height="22">
-              <circle cx="11" cy="7" r="4" fill="#3A7FC1" opacity="0.85"/>
-              <path d="M3 20c0-4.42 3.58-8 8-8s8 3.58 8 8" fill="#3A7FC1" opacity="0.5"/>
-            </svg>
-          </Link>
-        </div>
-      </div>
-
-      {/* Feed */}
-      <div style={{ padding: '16px 16px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* Guest banner */}
         {isGuest && (
-          <div style={{ background: 'var(--tile-yellow)', borderRadius: 'var(--r-xl)', padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'center', border: '1.5px solid rgba(245,158,11,0.20)' }}>
-            <span style={{ fontSize: 22, flexShrink: 0 }}>👋</span>
+          <div style={{ position: 'relative', zIndex: 1, marginTop: 16, background: 'rgba(255,255,255,0.85)', borderRadius: 'var(--r-lg)', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10, boxShadow: 'var(--sh-card)' }}>
+            <span style={{ fontSize: 20 }}>👋</span>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tile-yellow-ink)' }}>You&apos;re using Guest Mode</div>
-              <div style={{ fontSize: 12, color: 'var(--tile-yellow-ink)', marginTop: 2, opacity: 0.8 }}>Progress won&apos;t be saved. Create a free account to unlock streaks, saved scenarios, and your profile.</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ink)' }}>You&apos;re in Guest Mode</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 1 }}>Progress won&apos;t be saved</div>
             </div>
-            <a href="/signup" style={{ background: 'var(--maple)', color: '#fff', borderRadius: 'var(--r-full)', padding: '7px 14px', fontSize: 12, fontWeight: 700, textDecoration: 'none', flexShrink: 0, boxShadow: '0 3px 10px rgba(245,158,11,0.35)' }}>Sign up free</a>
+            <a href="/signup" style={{ background: 'var(--primary)', color: '#fff', borderRadius: 'var(--r-full)', padding: '6px 14px', fontSize: 12, fontWeight: 800, textDecoration: 'none', boxShadow: 'var(--sh-fab)', whiteSpace: 'nowrap' }}>Sign up free</a>
           </div>
         )}
+      </div>
 
-        {/* Hero row: Continue Learning + Goal Ring */}
+      {/* Feed */}
+      <div style={{ padding: '16px 16px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* Daily goal + continue row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'stretch' }}>
 
-          {/* Continue Learning */}
+          {/* Continue card */}
           {activeScenario ? (
             <Link href={`/scenario/${activeScenario.id}`} style={{
-              background: 'linear-gradient(145deg, #4158D0, #3A7BD5 60%, #2563EB)',
-              borderRadius: 'var(--r-xl)', padding: 20,
-              display: 'flex', flexDirection: 'column', gap: 12,
-              boxShadow: '0 10px 40px rgba(65,88,208,0.30)',
-              textDecoration: 'none', position: 'relative', overflow: 'hidden',
+              background: 'var(--surface)', borderRadius: 'var(--r-xl)',
+              padding: 20, display: 'flex', flexDirection: 'column', gap: 10,
+              boxShadow: 'var(--sh-float)', textDecoration: 'none',
+              borderLeft: '4px solid var(--sky)',
             }}>
+              <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--sky-dark)' }}>Continue Learning</div>
+              <div style={{ fontSize: 17, fontWeight: 900, color: 'var(--ink)', lineHeight: '22px' }}>{activeScenario.title}</div>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.60)' }}>Continue Learning</div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.20)', borderRadius: 9999, padding: '4px 10px', fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>
-                  {CATEGORY_EMOJI[activeScenario.category] ?? '📚'} {activeScenario.category}
+                <div style={{ height: 6, background: 'var(--sky-light)', borderRadius: 9999, overflow: 'hidden', marginBottom: 5 }}>
+                  <div style={{ height: '100%', background: 'linear-gradient(90deg, var(--sky) 0%, var(--primary) 100%)', borderRadius: 9999, width: '43%' }} />
                 </div>
+                <div style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 700 }}>43% complete</div>
               </div>
-              <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.015em', color: '#fff' }}>{activeScenario.title}</div>
-              <div>
-                <div style={{ height: 5, background: 'rgba(255,255,255,0.18)', borderRadius: 9999, overflow: 'hidden', marginBottom: 5 }}>
-                  <div style={{ height: '100%', background: '#fff', borderRadius: 9999, width: '43%', opacity: 0.9 }} />
-                </div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.55)' }}>43% learned</div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', color: '#2563EB', borderRadius: 9999, padding: '8px 14px', fontSize: 13, fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
-                  Resume <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--primary)', color: '#fff', borderRadius: 9999, padding: '7px 14px', fontSize: 13, fontWeight: 800, alignSelf: 'flex-start', boxShadow: 'var(--sh-fab)' }}>
+                Resume →
               </div>
             </Link>
           ) : (
             <Link href="/onboarding/situation" style={{
-              background: 'linear-gradient(145deg, #4158D0, #2563EB)',
+              background: 'linear-gradient(145deg, var(--sky) 0%, var(--primary) 100%)',
               borderRadius: 'var(--r-xl)', padding: 20,
-              display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center',
-              boxShadow: '0 10px 40px rgba(65,88,208,0.30)', textDecoration: 'none',
+              display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center',
+              boxShadow: 'var(--sh-lift)', textDecoration: 'none',
             }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>Start your first scenario</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>Tell us your situation and we&apos;ll build your learning kit</div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', color: '#2563EB', borderRadius: 9999, padding: '8px 14px', fontSize: 13, fontWeight: 700, alignSelf: 'flex-start' }}>
+              <div style={{ fontSize: 17, fontWeight: 900, color: '#fff', lineHeight: '22px' }}>Start your first scenario</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>Tell us your situation — AI builds your kit</div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.25)', color: '#fff', borderRadius: 9999, padding: '7px 14px', fontSize: 13, fontWeight: 800, alignSelf: 'flex-start' }}>
                 Get started →
               </div>
             </Link>
           )}
 
           {/* Goal ring */}
-          <div style={{ background: 'var(--surface)', borderRadius: 'var(--r-xl)', padding: '16px 12px', boxShadow: 'var(--sh-card)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, justifyContent: 'center', minWidth: 92 }}>
-            <div style={{ position: 'relative', width: 64, height: 64 }}>
-              <svg width="64" height="64" viewBox="0 0 64 64" style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx="32" cy="32" r="27" fill="none" stroke="var(--divider)" strokeWidth="5" />
-                <circle ref={ringRef} cx="32" cy="32" r="27" fill="none"
-                  stroke="var(--success)" strokeWidth="5" strokeLinecap="round"
-                  strokeDasharray={String(2 * Math.PI * 27)}
-                  strokeDashoffset={String(2 * Math.PI * 27)}
+          <div style={{ background: 'var(--surface)', borderRadius: 'var(--r-xl)', padding: '14px 10px', boxShadow: 'var(--sh-card)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, justifyContent: 'center', minWidth: 88 }}>
+            <div style={{ position: 'relative', width: 60, height: 60 }}>
+              <svg width="60" height="60" viewBox="0 0 60 60" style={{ transform: 'rotate(-90deg)' }}>
+                <circle cx="30" cy="30" r="24" fill="none" stroke="var(--sky-light)" strokeWidth="5" />
+                <circle ref={ringRef} cx="30" cy="30" r="24" fill="none"
+                  stroke="url(#ringGrad)" strokeWidth="5" strokeLinecap="round"
+                  strokeDasharray={String(2 * Math.PI * 24)}
+                  strokeDashoffset={String(2 * Math.PI * 24)}
                   style={{ transition: 'stroke-dashoffset 800ms var(--ease-out)' }}
                 />
+                <defs>
+                  <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="var(--sky)" />
+                    <stop offset="100%" stopColor="var(--primary)" />
+                  </linearGradient>
+                </defs>
               </svg>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 16, fontWeight: 900 }}>
-                  {profile.daily_goal > 0 ? Math.round(((learnedCount % profile.daily_goal) / profile.daily_goal) * 100) : 0}%
-                </span>
-                <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>Today</span>
+                <span style={{ fontSize: 14, fontWeight: 900, color: 'var(--ink)' }}>{Math.round(dailyPct)}%</span>
               </div>
             </div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-2)', textAlign: 'center' }}>
-              {learnedCount % (profile.daily_goal || 10)} of {profile.daily_goal || 10}<br />cards
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-2)', textAlign: 'center', lineHeight: '15px' }}>
+              {dailyDone} of {profile.daily_goal || 10}<br />today
             </div>
           </div>
         </div>
 
-        {/* Buddy banner */}
+        {/* Buddy shortcut */}
         <Link href="/buddy" style={{
-          background: 'var(--tile-green)', borderRadius: 'var(--r-xl)', padding: '16px 18px',
-          display: 'flex', alignItems: 'center', gap: 14,
-          border: '2px solid rgba(26,107,69,0.15)', textDecoration: 'none',
+          background: 'linear-gradient(135deg, #E8F7FD 0%, #EEF0FF 100%)',
+          borderRadius: 'var(--r-xl)', padding: '14px 16px',
+          display: 'flex', alignItems: 'center', gap: 12,
+          boxShadow: 'var(--sh-card)', textDecoration: 'none',
+          border: '1.5px solid rgba(86,204,242,0.20)',
         }}>
-          <div style={{ width: 44, height: 44, borderRadius: 'var(--r-md)', background: 'rgba(26,107,69,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🗣️</div>
+          <div style={{ width: 44, height: 44, borderRadius: 'var(--r-md)', background: 'rgba(86,204,242,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🗣️</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>Buddy Mode ready</div>
-            <div style={{ fontSize: 12, color: 'var(--tile-green-ink)', marginTop: 2 }}>Translate &amp; speak phrases out loud</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)' }}>Buddy Mode</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 1, fontWeight: 600 }}>Translate &amp; speak phrases out loud</div>
           </div>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(26,107,69,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d="M3 7h8M8 4l3 3-3 3" stroke="var(--tile-green-ink)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--sky)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--sh-sky)' }}>
+            <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </div>
         </Link>
 
         {/* Quick actions */}
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 10 }}>Quick actions</div>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 10 }}>Quick Actions</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <Link href="/onboarding/situation" style={{ background: 'var(--tile-blue)', borderRadius: 'var(--r-xl)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10, textDecoration: 'none', minHeight: 110 }}>
-              <div style={{ width: 38, height: 38, borderRadius: 'var(--r-sm)', background: 'rgba(58,127,193,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M10 4v12M4 10h12" stroke="#3A7FC1" strokeWidth="2" strokeLinecap="round"/></svg>
+            <Link href="/onboarding/situation" style={{ background: 'var(--surface)', borderRadius: 'var(--r-xl)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10, textDecoration: 'none', boxShadow: 'var(--sh-card)', minHeight: 110 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 'var(--r-md)', background: 'var(--sky-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="M10 4v12M4 10h12" stroke="var(--sky-dark)" strokeWidth="2.2" strokeLinecap="round"/></svg>
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>New Scenario</div>
-                <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--tile-blue-ink)', marginTop: 2 }}>AI-generated</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)' }}>New Scenario</div>
+                <div style={{ fontSize: 11, color: 'var(--sky-dark)', marginTop: 2, fontWeight: 700 }}>AI-generated</div>
               </div>
             </Link>
 
-            <Link href="/flashcards/current" style={{ background: 'var(--tile-purple)', borderRadius: 'var(--r-xl)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10, textDecoration: 'none', minHeight: 110 }}>
-              <div style={{ width: 38, height: 38, borderRadius: 'var(--r-sm)', background: 'rgba(91,61,170,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><rect x="3" y="5" width="14" height="10" rx="3" stroke="#5B3DAA" strokeWidth="1.6"/><path d="M8 8.5l4 1.5-4 1.5V8.5z" fill="#5B3DAA"/></svg>
+            <Link href="/flashcards/current" style={{ background: 'var(--surface)', borderRadius: 'var(--r-xl)', padding: '16px 14px', display: 'flex', flexDirection: 'column', gap: 10, textDecoration: 'none', boxShadow: 'var(--sh-card)', minHeight: 110 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 'var(--r-md)', background: 'var(--purple-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="3" y="5" width="14" height="10" rx="3" stroke="var(--purple)" strokeWidth="1.8"/><path d="M8 8.5l4 1.5-4 1.5V8.5z" fill="var(--purple)"/></svg>
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>Daily Practice</div>
-                <div style={{ fontSize: 11, fontWeight: 500, color: 'var(--tile-purple-ink)', marginTop: 2 }}>Cards due</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)' }}>Practice</div>
+                <div style={{ fontSize: 11, color: 'var(--purple)', marginTop: 2, fontWeight: 700 }}>Flashcards</div>
               </div>
             </Link>
           </div>
         </div>
 
-        {/* My Scenarios */}
+        {/* My scenarios */}
         {scenarios.length > 0 && (
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>My Scenarios</div>
-              <Link href="/scenarios" style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-2)', textDecoration: 'none' }}>See all</Link>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>My Scenarios</div>
+              <Link href="/scenarios" style={{ fontSize: 12, fontWeight: 800, color: 'var(--primary)', textDecoration: 'none' }}>See all</Link>
             </div>
-            <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none', marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16 }}>
+            <div style={{ display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none', marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, paddingBottom: 4 }}>
               {scenarios.slice(0, 5).map(s => {
                 const col = CATEGORY_COLORS[s.category] ?? CATEGORY_COLORS.custom
                 return (
                   <Link key={s.id} href={`/scenario/${s.id}`} style={{
-                    width: 148, background: 'var(--surface)', borderRadius: 'var(--r-xl)',
-                    padding: 14, boxShadow: 'var(--sh-card)', flexShrink: 0,
-                    display: 'flex', flexDirection: 'column', gap: 8, textDecoration: 'none',
-                    position: 'relative', overflow: 'hidden',
+                    width: 140, background: 'var(--surface)', borderRadius: 'var(--r-xl)',
+                    padding: '14px 12px', boxShadow: 'var(--sh-card)',
+                    flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8,
+                    textDecoration: 'none',
                   }}>
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: col.ink, opacity: 0.5, borderRadius: '24px 24px 0 0' }} />
-                    <div style={{ fontSize: 24, lineHeight: 1, marginTop: 4 }}>{CATEGORY_EMOJI[s.category] ?? '📚'}</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)', lineHeight: '17px' }}>{s.title}</div>
-                    <div style={{ height: 4, background: 'var(--divider)', borderRadius: 9999, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', background: col.ink, borderRadius: 9999, width: '40%' }} />
-                    </div>
-                    <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-3)', display: 'flex', justifyContent: 'space-between' }}>
-                      <span>In progress</span>
+                    <div style={{ width: 36, height: 36, borderRadius: 'var(--r-md)', background: col.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{col.emoji}</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ink)', lineHeight: '16px' }}>{s.title}</div>
+                    <div style={{ height: 4, background: 'var(--bg)', borderRadius: 9999 }}>
+                      <div style={{ height: '100%', background: col.ink, borderRadius: 9999, width: '40%', opacity: 0.7 }} />
                     </div>
                   </Link>
                 )
@@ -261,18 +252,22 @@ export default function DashboardClient({ profile, scenarios, learnedCount, isGu
           </div>
         )}
 
-        {/* XP total */}
-        <div style={{ background: 'linear-gradient(135deg, #EDE8FB, #DDD4F8 50%, #C9B8F5)', borderRadius: 'var(--r-xl)', padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 6px 24px rgba(124,58,237,0.18)', border: '1.5px solid rgba(124,58,237,0.15)' }}>
-          <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.60)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0, boxShadow: '0 2px 8px rgba(124,58,237,0.15)' }}>⭐</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(91,61,170,0.60)', marginBottom: 3 }}>Total XP earned</div>
-            <div style={{ fontSize: 16, fontWeight: 900, color: '#2D1B6E' }}>{profile.xp_total.toLocaleString()} points</div>
-            <div style={{ fontSize: 12, color: 'rgba(74,42,144,0.60)', marginTop: 2 }}>{learnedCount} words &amp; phrases learned</div>
-          </div>
-          <Link href="/profile" style={{ background: '#7C3AED', color: '#fff', borderRadius: 9999, padding: '5px 12px', fontSize: 12, fontWeight: 900, flexShrink: 0, textDecoration: 'none', boxShadow: '0 3px 10px rgba(124,58,237,0.35)' }}>
-            View
+        {/* XP Banner */}
+        {!isGuest && (
+          <Link href="/profile" style={{
+            background: 'linear-gradient(135deg, var(--purple) 0%, #B44DFF 100%)',
+            borderRadius: 'var(--r-xl)', padding: '16px 18px',
+            display: 'flex', alignItems: 'center', gap: 12,
+            boxShadow: '0 6px 24px rgba(123,97,255,0.30)', textDecoration: 'none',
+          }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>⭐</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 3 }}>Total XP</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>{profile.xp_total.toLocaleString()} points</div>
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.20)', color: '#fff', borderRadius: 9999, padding: '6px 14px', fontSize: 12, fontWeight: 800 }}>View →</div>
           </Link>
-        </div>
+        )}
 
       </div>
     </div>

@@ -1,137 +1,134 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-/* ── Allo Design Tokens ──────────────────────────────────────── */
+/* ── Allo Design Tokens — Airy, warm, friendly ───────────────── */
 :root {
+  /* Backgrounds — warm sky, not cold blue */
+  --bg:           #EEF7FF;
+  --bg-warm:      #FFF8F0;
+
   /* Surfaces */
-  --bg:          #F5F5F7;
-  --surface:     #FFFFFF;
-  --surface-alt: #F0F0F3;
+  --surface:      #FFFFFF;
+  --surface-alt:  #F5F0FF;
+  --surface-warm: #FFF9F0;
 
   /* Ink */
-  --ink:     #0A0A0A;
-  --ink-2:   #6B6B6B;
-  --ink-3:   #ABABAB;
-  --ink-inv: #FFFFFF;
-  --black:   #141414;
-  --divider: #EBEBEB;
+  --ink:          #1A2E3B;
+  --ink-2:        #4A6478;
+  --ink-3:        #94AFC0;
+  --ink-inv:      #FFFFFF;
 
-  /* Pastel tiles */
-  --tile-blue:        #DCEEFB;
-  --tile-blue-ink:    #1A5FA8;
-  --tile-green:       #D8F5E8;
-  --tile-green-ink:   #1A6B45;
-  --tile-yellow:      #FEF7D0;
-  --tile-yellow-ink:  #A07A10;
-  --tile-purple:      #EDE8FB;
-  --tile-purple-ink:  #5B3DAA;
-  --tile-pink:        #FDE8EF;
-  --tile-pink-ink:    #B03060;
-  --tile-orange:      #FEEBD0;
-  --tile-orange-ink:  #B05A10;
-  --tile-teal:        #D0F4F4;
-  --tile-teal-ink:    #1A7A7A;
+  /* Brand — Quebec maple warmth as primary */
+  --primary:      #FF7043;   /* warm tangerine — energetic, warm */
+  --primary-dark: #E64A19;
+  --primary-light:#FFF3EE;
 
-  /* Brand */
-  --maple:   #F59E0B;
-  --coral:   #F43F5E;
-  --success: #10B981;
+  /* Sky blue — secondary, airy */
+  --sky:          #56CCF2;
+  --sky-dark:     #2D9CDB;
+  --sky-light:    #E8F7FD;
 
-  /* Radii */
-  --r-sm:   10px;
+  /* Maple gold — achievements & streaks */
+  --maple:        #FFB020;
+  --maple-light:  #FFF5D6;
+
+  /* Accents */
+  --coral:        #FF6584;
+  --coral-light:  #FFE8EE;
+  --green:        #27AE60;
+  --green-light:  #E8F8EE;
+  --purple:       #7B61FF;
+  --purple-light: #EEF0FF;
+
+  /* Legacy compat */
+  --black:        #1A2E3B;
+  --success:      #27AE60;
+  --divider:      rgba(86,204,242,0.18);
+
+  /* Tile system — pastel, friendly */
+  --tile-blue:     #E8F7FD;   --tile-blue-ink:   #1A7AB5;
+  --tile-green:    #E8F8EE;   --tile-green-ink:  #1A7A45;
+  --tile-yellow:   #FFF5D6;   --tile-yellow-ink: #A06810;
+  --tile-purple:   #EEF0FF;   --tile-purple-ink: #5B42C8;
+  --tile-pink:     #FFE8EE;   --tile-pink-ink:   #C2185B;
+  --tile-orange:   #FFF3EE;   --tile-orange-ink: #BF4A20;
+  --tile-teal:     #E0F7FA;   --tile-teal-ink:   #00695C;
+
+  /* Radii — very rounded, friendly */
+  --r-sm:   12px;
   --r-md:   16px;
   --r-lg:   20px;
   --r-xl:   24px;
   --r-2xl:  32px;
   --r-full: 9999px;
 
-  /* Shadows */
-  --sh-card:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --sh-float: 0 4px 16px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05);
-  --sh-lift:  0 10px 40px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.06);
-  --sh-fab:   0 4px 20px rgba(20,20,20,0.28), 0 2px 6px rgba(20,20,20,0.15);
-  --sh-coral: 0 6px 24px rgba(244,63,94,0.35);
-  --sh-green: 0 6px 24px rgba(16,185,129,0.28);
+  /* Shadows — warm, soft */
+  --sh-card:  0 2px 12px rgba(26,46,59,0.07), 0 1px 3px rgba(26,46,59,0.04);
+  --sh-float: 0 6px 24px rgba(26,46,59,0.10), 0 2px 8px rgba(26,46,59,0.06);
+  --sh-lift:  0 12px 40px rgba(26,46,59,0.14), 0 4px 12px rgba(26,46,59,0.08);
+  --sh-fab:   0 6px 20px rgba(255,112,67,0.38), 0 2px 8px rgba(255,112,67,0.20);
+  --sh-sky:   0 6px 20px rgba(86,204,242,0.35), 0 2px 8px rgba(86,204,242,0.18);
 
-  /* Easing */
   --spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.30, 1);
-
-  /* Buddy mode header */
-  --buddy-bg:       #DCEEFB;
-  --buddy-text:     #1A5FA8;
-  --buddy-text-dim: rgba(26,95,168,0.55);
+  --font: 'Nunito', sans-serif;
 }
 
-/* ── Global base ─────────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  height: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; -webkit-font-smoothing: antialiased; }
 
 body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font);
   overscroll-behavior: none;
 }
 
-/* ── Mobile shell — max 430px centred ───────────────────────── */
+/* ── Mobile shell ────────────────────────────────────────────── */
 .shell {
   width: 100%;
   max-width: 430px;
   min-height: 100dvh;
   margin: 0 auto;
-  background: var(--surface);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
 }
 
-/* ── Spring button press ────────────────────────────────────── */
-.btn-spring {
-  transition: transform 160ms var(--spring), opacity 200ms ease;
+/* ── Subtle cloud blobs behind content ───────────────────────── */
+.sky-bg {
+  background:
+    radial-gradient(ellipse 280px 140px at 95% 8%, rgba(255,255,255,0.55) 0%, transparent 70%),
+    radial-gradient(ellipse 200px 100px at 5% 15%, rgba(255,255,255,0.40) 0%, transparent 70%),
+    var(--bg);
 }
-.btn-spring:active { transform: scale(0.96); }
 
-/* ── Scrollbars hidden on mobile ────────────────────────────── */
+/* ── White card ──────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-card);
+}
+
+/* ── Scroll hide ─────────────────────────────────────────────── */
 .scroll-hide::-webkit-scrollbar { display: none; }
 .scroll-hide { scrollbar-width: none; }
 
-/* ── Toast ──────────────────────────────────────────────────── */
-.toast-pill {
-  position: fixed;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: var(--black);
-  color: var(--ink-inv);
-  padding: 10px 18px;
-  border-radius: var(--r-full);
-  font-size: 13px;
-  font-weight: 600;
-  box-shadow: var(--sh-lift);
-  opacity: 0;
-  transition: opacity 200ms ease, transform 220ms var(--spring);
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 100;
-}
-.toast-pill.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ── Confetti ───────────────────────────────────────────────── */
+/* ── Animations ──────────────────────────────────────────────── */
 @keyframes confetti-fall {
   0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
   100% { transform: translate(var(--cx),var(--cy)) rotate(var(--cr)) scale(0.2); opacity: 0; }
+}
+@keyframes float-up {
+  from { transform: translateY(14px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes bounce-in {
+  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+  65%  { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
 }
