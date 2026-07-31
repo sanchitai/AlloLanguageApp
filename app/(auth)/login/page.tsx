@@ -1,16 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
+
+  useEffect(() => {
+    const msg = searchParams.get('message')
+    if (msg === 'confirm') {
+      setInfo('Check your email and click the confirmation link to activate your account, then sign in here.')
+    }
+    if (searchParams.get('error')) {
+      setError('Authentication failed. Please try again.')
+    }
+  }, [searchParams])
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -59,6 +71,11 @@ export default function LoginPage() {
 
         {/* Form */}
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {info && (
+            <div style={{ background: 'var(--tile-blue)', color: 'var(--tile-blue-ink)', padding: '12px 16px', borderRadius: 'var(--r-md)', fontSize: 14, fontWeight: 500, lineHeight: '20px' }}>
+              📧 {info}
+            </div>
+          )}
           {error && (
             <div style={{ background: 'var(--tile-pink)', color: 'var(--tile-pink-ink)', padding: '12px 16px', borderRadius: 'var(--r-md)', fontSize: 14, fontWeight: 500 }}>
               {error}

@@ -29,19 +29,27 @@ export default function SignupPage() {
     })
 
     if (error) {
-      setError(error.message)
+      setError(error.message || error.name || 'Signup failed. Please try again.')
       setLoading(false)
       return
     }
 
-    if (data.user && !data.session) {
-      // Email confirmation required
-      router.push('/login?message=Check your email to confirm your account')
+    // Supabase requires email confirmation by default
+    // data.session is null until email is confirmed
+    if (data.user) {
+      if (!data.session) {
+        // Email confirmation required — show message on login page
+        router.push('/login?message=confirm')
+        return
+      }
+      // Email confirmation disabled — go straight to onboarding
+      router.push('/onboarding/mode')
+      router.refresh()
       return
     }
 
-    router.push('/onboarding/mode')
-    router.refresh()
+    setError('Something went wrong. Please try again.')
+    setLoading(false)
   }
 
   async function handleGoogle() {
