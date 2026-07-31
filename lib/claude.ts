@@ -43,7 +43,10 @@ JSON response only, no markdown:`,
   }
 }
 
-export async function generateScenario(description: string, nativeLang: 'en' | 'fr') {
+export async function generateScenario(description: string, nativeLang: 'en' | 'fr' | 'de', targetLang = 'fr') {
+  const langNames: Record<string, string> = { en: 'English', fr: 'Québécois French', de: 'German' }
+  const targetName = langNames[targetLang] ?? 'Québécois French'
+  const nativeName = langNames[nativeLang] ?? 'English'
   const message = await client.messages.create({
     model: 'claude-sonnet-4-5',
     max_tokens: 4096,
@@ -53,8 +56,8 @@ export async function generateScenario(description: string, nativeLang: 'en' | '
         role: 'user',
         content: `Generate a complete language learning scenario pack for this situation: "${description}"
 
-The learner's native language is: ${nativeLang === 'en' ? 'English' : 'French'}
-Target language: ${nativeLang === 'en' ? 'Québécois French' : 'English'}
+The learner's native language is: ${nativeName}
+Target language: ${targetName}
 
 Return ONLY a JSON object (no markdown) with this exact structure:
 {

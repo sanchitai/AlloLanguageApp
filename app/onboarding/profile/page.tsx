@@ -42,13 +42,14 @@ export default function OnboardingProfilePage() {
     if (user) {
       const mode = localStorage.getItem('allo_mode') ?? 'learn'
       const nativeLang = localStorage.getItem('allo_know') ?? 'en'
+      const targetLang = localStorage.getItem('allo_learn') ?? 'fr'
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase.from('profiles') as any).upsert({
         id: user.id,
         display_name: name.trim(),
         app_mode: mode as 'learn' | 'buddy',
         native_language: nativeLang,
-        target_languages: [nativeLang === 'en' ? 'fr' : 'en'],
+        target_languages: [targetLang],
         dialect: 'quebec',
         daily_goal: goal,
         onboarding_done: true,

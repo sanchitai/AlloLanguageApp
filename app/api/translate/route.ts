@@ -10,8 +10,19 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Check cache in Supabase first
+    // Length guard — prevent abuse
+    if (text.length > 1000) {
+      return Response.json({ error: 'Text too long (max 1000 chars)' }, { status: 400 })
+    }
+
+    // Auth check — allow authenticated users and guests, block anonymous bots
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    const isGuest = request.headers.get('cookie')?.includes('allo_guest=true')
+    if (!user && !isGuest) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const cacheKey = createHash('sha256').update(`${fromLang}:${toLang}:${text.toLowerCase().trim()}`).digest('hex')
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

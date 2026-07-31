@@ -25,14 +25,14 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Daily limit reached (5 scenarios/day)' }, { status: 429 })
     }
 
-    const { description, nativeLang = 'en' } = await request.json()
+    const { description, nativeLang = 'en', targetLang = 'fr' } = await request.json()
 
     if (!description) {
       return Response.json({ error: 'Missing description' }, { status: 400 })
     }
 
     // Generate via Claude
-    const generated = await generateScenario(description, nativeLang)
+    const generated = await generateScenario(description, nativeLang, targetLang)
 
     // Save scenario to database
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         category: 'custom',
         is_preset: false,
         native_language: nativeLang,
-        target_language: nativeLang === 'en' ? 'fr' : 'en',
+        target_language: targetLang,
         dialect: 'quebec',
         item_count: (generated.vocabulary?.length ?? 0) + (generated.phrases?.length ?? 0),
       })

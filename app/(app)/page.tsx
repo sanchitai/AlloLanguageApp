@@ -59,11 +59,13 @@ export default async function DashboardPage() {
 
   const scenarios = (scenariosData ?? []) as Scenario[]
 
+  const today = new Date().toISOString().split('T')[0]
   const { count: learnedCount } = await supabase
     .from('learning_progress')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', user.id)
     .eq('status', 'learned')
+    .gte('updated_at', `${today}T00:00:00`)
 
   return (
     <DashboardClient

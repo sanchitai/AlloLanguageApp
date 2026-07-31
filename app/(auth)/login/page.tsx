@@ -38,7 +38,7 @@ function LoginForm() {
   }
 
   async function handleGuest() {
-    document.cookie = 'allo_guest=true; path=/; max-age=2592000'
+    document.cookie = 'allo_guest=true; path=/; max-age=2592000; SameSite=Lax; Secure'
     router.push('/onboarding/mode')
   }
 

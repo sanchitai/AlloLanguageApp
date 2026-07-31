@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PRESET_SCENARIOS } from '@/lib/content'
+import { cookies } from 'next/headers'
 
 const CATEGORY_COLORS: Record<string, { bg: string; ink: string }> = {
   daycare:   { bg: '#DCEEFB', ink: '#1A5FA8' },
@@ -15,16 +16,21 @@ const CATEGORY_COLORS: Record<string, { bg: string; ink: string }> = {
 }
 
 export default async function ScenariosPage() {
+  const cookieStore = await cookies()
+  const isGuest = cookieStore.get('allo_guest')?.value === 'true'
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  if (!user && !isGuest) redirect('/login')
 
-  const { data: scenariosData } = await supabase
+  // Guests get no personal scenarios — only preset library
+  const scenariosData = user ? await supabase
     .from('scenarios')
     .select('*')
     .eq('user_id', user.id)
     .eq('is_archived', false)
     .order('created_at', { ascending: false })
+    .then(r => r.data) : null
 
   const myScenarios = scenariosData as Array<{ id: string; title: string; category: string; item_count: number }> | null
 

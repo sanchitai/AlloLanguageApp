@@ -44,8 +44,10 @@ export default function ProfilePage() {
     if (!profile) return
     setSaving(true)
     const supabase = createClient()
-    await (supabase.from('profiles') as ReturnType<typeof supabase.from>).update(updates as Record<string, unknown>).eq('id', profile.id)
-    setProfile(p => p ? { ...p, ...updates } : p)
+    const { error } = await (supabase.from('profiles') as ReturnType<typeof supabase.from>).update(updates as Record<string, unknown>).eq('id', profile.id)
+    if (!error) {
+      setProfile(p => p ? { ...p, ...updates } : p)
+    }
     setSaving(false)
   }
 

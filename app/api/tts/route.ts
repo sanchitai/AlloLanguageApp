@@ -12,8 +12,18 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Missing text' }, { status: 400 })
     }
 
-    // Check Supabase Storage cache
+    // Length guard — prevent expensive abuse
+    if (text.length > 500) {
+      return Response.json({ error: 'Text too long (max 500 chars)' }, { status: 400 })
+    }
+
+    // Auth check — allow authenticated users and guests
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    const isGuest = request.headers.get('cookie')?.includes('allo_guest=true')
+    if (!user && !isGuest) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const cacheKey = createHash('sha256').update(`${gender}:${text.trim()}`).digest('hex')
     const storagePath = `tts/${cacheKey}.mp3`
 

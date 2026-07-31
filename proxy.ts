@@ -23,20 +23,15 @@ export async function proxy(request: NextRequest) {
     }
   )
 
+  // Refresh session — critical for Supabase SSR token refresh
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Check if user chose guest mode
   const isGuest = request.cookies.get('allo_guest')?.value === 'true'
 
-  // Profile page requires auth — guests get redirected to login
-  const requiresAuth = pathname === '/profile'
-
-  if (requiresAuth && !user && !isGuest) {
+  // Profile requires real auth — no guests
+  if (pathname === '/profile' && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
-
-  // All other app routes: allow through for both authed users AND guests
-  // (guest mode lets users use buddy/flashcards/scenarios without saving progress)
 
   // Redirect logged-in users away from auth pages
   if (user && (pathname === '/login' || pathname === '/signup')) {
@@ -47,5 +42,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.svg|.*\\.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.png|.*\\.svg|.*\\.ico|.*\\.webp).*)'],
 }

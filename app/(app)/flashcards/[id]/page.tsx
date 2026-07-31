@@ -28,9 +28,15 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
 
   useEffect(() => {
     params.then(p => {
-      if (p.id && p.id !== 'current') setScenarioId(p.id)
+      const id = (p.id && p.id !== 'current') ? p.id : 'preset-daycare'
+      const cards = getFlashCards(id, lang)
+      setScenarioId(id)
+      setStates(Object.fromEntries(cards.map(c => [c.id, 'unseen' as CardState])))
+      setIdx(0)
+      setDone(false)
+      setFlipped(false)
     })
-  }, [params])
+  }, [params, lang])
 
   const card = CARDS[idx]
   const learned = Object.values(states).filter(s => s === 'learned').length

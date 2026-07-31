@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 const PRESET_SCENARIOS: Record<string, { title: string; emoji: string; category: string; desc: string }> = {
   'preset-daycare':   { title: 'French Daycare Pickup', emoji: '👶', category: 'daycare', desc: 'Talk to daycare staff about your child\'s day' },
@@ -43,7 +43,10 @@ export default async function ScenarioDetailPage({ params }: { params: Promise<{
 
   if (!preset) {
     const supabase = await createClient()
-    const { data: scenarioData } = await supabase.from('scenarios').select('*').eq('id', id).single()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/login')
+
+    const { data: scenarioData } = await supabase.from('scenarios').select('*').eq('id', id).eq('user_id', user.id).single()
     if (!scenarioData) notFound()
     const data = scenarioData as { id: string; title: string; description: string | null; category: string; item_count: number }
     scenario = { ...data, emoji: '✨', desc: data.description ?? '' }

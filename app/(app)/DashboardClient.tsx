@@ -30,7 +30,7 @@ export default function DashboardClient({ profile, scenarios, learnedCount, isGu
 }) {
   const ringRef = useRef<SVGCircleElement>(null)
   const firstName = profile.display_name?.split(' ')[0] ?? 'there'
-  const dailyDone = learnedCount % (profile.daily_goal || 10)
+  const dailyDone = Math.min(learnedCount, profile.daily_goal || 10)
   const dailyPct = Math.min((dailyDone / (profile.daily_goal || 10)) * 100, 100)
 
   useEffect(() => {

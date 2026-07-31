@@ -2,14 +2,21 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getPhrasePacks, getStoredLang, getLangLabel } from '@/lib/content'
-const lang = getStoredLang()
-const PHRASE_PACKS = getPhrasePacks(lang)
-const langLabel = getLangLabel(lang)
-type PackKey = keyof typeof PHRASE_PACKS
+import { getPhrasePacks, getStoredLang, getLangLabel, type Lang } from '@/lib/content'
 
 export default function BuddyPage() {
-  const [fromLang, setFromLang] = useState<'en' | 'fr'>('en')
+  const [lang, setLang] = useState<Lang>('fr')
+  const [fromLang, setFromLang] = useState<'en' | Lang>('en')
+
+  useEffect(() => {
+    const stored = getStoredLang()
+    setLang(stored)
+    setFromLang('en')
+  }, [])
+
+  const PHRASE_PACKS = getPhrasePacks(lang)
+  const langLabel = getLangLabel(lang)
+  type PackKey = keyof typeof PHRASE_PACKS
   const [inputText, setInputText] = useState('')
   const [sourceText, setSourceText] = useState("Hello, how was my child's day today?")
   const [translatedText, setTranslatedText] = useState("Bonjour, comment s'est passée la journée de mon enfant aujourd'hui?")
@@ -19,26 +26,30 @@ export default function BuddyPage() {
   const [showLoud, setShowLoud] = useState(false)
   const [loudPhrase, setLoudPhrase] = useState('')
   const [loudTrans, setLoudTrans] = useState('')
+  const [cachedGender, setCachedGender] = useState<'female' | 'male' | 'neutral'>('female')
+
+  // Fetch voice gender once on mount
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase.from('profiles').select('voice_gender').eq('id', user.id).single()
+        .then(({ data }) => {
+          const row = data as { voice_gender?: string } | null
+          if (row?.voice_gender) setCachedGender(row.voice_gender as 'female' | 'male' | 'neutral')
+        })
+    })
+  }, [])
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  async function getVoiceGender(): Promise<'female' | 'male' | 'neutral'> {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return 'female'
-    const { data } = await supabase.from('profiles').select('voice_gender').eq('id', user.id).single()
-    const row = data as { voice_gender?: string } | null
-    return (row?.voice_gender as 'female' | 'male' | 'neutral') ?? 'female'
-  }
 
   async function playTTS(text: string) {
     setIsPlaying(true)
     try {
-      const gender = await getVoiceGender()
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, gender }),
+        body: JSON.stringify({ text, gender: cachedGender }),
       })
       const { url } = await res.json()
       if (url) {
@@ -75,7 +86,7 @@ export default function BuddyPage() {
   }
 
   function swapLanguages() {
-    setFromLang(l => l === 'en' ? 'fr' : 'en')
+    setFromLang(l => l === 'en' ? lang : 'en')
     setSourceText(translatedText)
     setTranslatedText(sourceText)
   }
@@ -133,7 +144,7 @@ export default function BuddyPage() {
         {/* Translation card */}
         <div style={{ background: 'var(--surface)', borderRadius: 'var(--r-xl)', boxShadow: 'var(--sh-lift)', overflow: 'hidden' }}>
           <div style={{ padding: '14px 16px 10px', borderBottom: '1px solid var(--divider)' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 4 }}>{fromLang === 'en' ? 'English' : 'Français'}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 4 }}>{fromLang === 'en' ? 'English' : langLabel.name}</div>
             <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink-2)', lineHeight: '22px' }}>{sourceText}</div>
           </div>
           <div style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #F3EEFF, #EDE8FB)' }}>
