@@ -3,139 +3,183 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const CANADA_FLAG = (
-  <svg viewBox="0 0 44 29" fill="none" width="44" height="29" style={{ borderRadius: 5 }}>
-    <rect width="11" height="29" fill="#D52B1E"/><rect x="11" width="22" height="29" fill="#FFFFFF"/><rect x="33" width="11" height="29" fill="#D52B1E"/>
-    <path d="M22 4.5l1.1 3.3 3.2-.5-2 2.4 1.8 1.2-2.6.3.4 3.2-1.9-1.5v4.1l-.5-2h-.9l-.5 2v-4.1l-1.9 1.5.4-3.2-2.6-.3 1.8-1.2-2-2.4 3.2.5z" fill="#D52B1E"/>
-  </svg>
-)
-
-const QUEBEC_FLAG = (
-  <svg viewBox="0 0 44 29" fill="none" width="44" height="29" style={{ borderRadius: 5 }}>
-    <rect width="19.5" height="13" fill="#003DA5"/><rect x="24.5" width="19.5" height="13" fill="#003DA5"/>
-    <rect y="16" width="19.5" height="13" fill="#003DA5"/><rect x="24.5" y="16" width="19.5" height="13" fill="#003DA5"/>
-    <rect x="19.5" width="5" height="29" fill="#FFFFFF"/><rect y="13" width="44" height="3" fill="#FFFFFF"/>
-    <g transform="translate(9.75,6.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
-    <g transform="translate(34.25,6.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
-    <g transform="translate(9.75,22.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
-    <g transform="translate(34.25,22.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
-  </svg>
-)
+const LANGUAGES = [
+  {
+    id: 'fr',
+    name: 'French',
+    native: 'Français Québécois',
+    desc: 'Quebec French for everyday life in Canada',
+    emoji: '🍁',
+    flag: (
+      <svg viewBox="0 0 44 29" fill="none" width="52" height="34" style={{ borderRadius: 6, display: 'block' }}>
+        <rect width="19.5" height="13" fill="#003DA5"/><rect x="24.5" width="19.5" height="13" fill="#003DA5"/>
+        <rect y="16" width="19.5" height="13" fill="#003DA5"/><rect x="24.5" y="16" width="19.5" height="13" fill="#003DA5"/>
+        <rect x="19.5" width="5" height="29" fill="#FFFFFF"/><rect y="13" width="44" height="3" fill="#FFFFFF"/>
+        <g transform="translate(9.75,6.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
+        <g transform="translate(34.25,6.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
+        <g transform="translate(9.75,22.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
+        <g transform="translate(34.25,22.5) scale(0.38)"><ellipse cx="0" cy="-5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="-6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><ellipse cx="6.5" cy="2.5" rx="1.8" ry="2.5" fill="#FFFFFF"/><rect x="-3.5" y="5" width="7" height="2.5" rx="0.5" fill="#FFFFFF"/><rect x="-2" y="7.5" width="4" height="3.5" rx="0.5" fill="#FFFFFF"/></g>
+      </svg>
+    ),
+    color: '#003DA5',
+    bg: '#E8F0FF',
+    pill: '#003DA5',
+  },
+  {
+    id: 'de',
+    name: 'German',
+    native: 'Deutsch',
+    desc: 'Standard German for travel, work & daily life',
+    emoji: '🏔️',
+    flag: (
+      <svg viewBox="0 0 44 29" fill="none" width="52" height="34" style={{ borderRadius: 6, display: 'block' }}>
+        <rect width="44" height="9.67" fill="#000000"/>
+        <rect y="9.67" width="44" height="9.67" fill="#DD0000"/>
+        <rect y="19.33" width="44" height="9.67" fill="#FFCE00"/>
+      </svg>
+    ),
+    color: '#B8860B',
+    bg: '#FFFBE6',
+    pill: '#B8860B',
+  },
+]
 
 export default function OnboardingLanguagePage() {
   const router = useRouter()
-  const [know, setKnow] = useState<'en' | 'fr' | null>(null)
-  const [learn, setLearn] = useState<'en' | 'fr' | null>(null)
+  const [selected, setSelected] = useState<string | null>(null)
 
-  function pickKnow(l: 'en' | 'fr') {
-    if (learn === l) { shake(`learn-${l}`); return }
-    setKnow(l)
+  function handleContinue() {
+    if (!selected) return
+    localStorage.setItem('allo_learn', selected)
+    localStorage.setItem('allo_know', 'en')
+    router.push('/onboarding/situation')
   }
-  function pickLearn(l: 'en' | 'fr') {
-    if (know === l) { shake(`know-${l}`); return }
-    setLearn(l)
-  }
-  function shake(id: string) {
-    const el = document.getElementById(id)
-    if (!el) return
-    el.style.transition = 'transform 60ms ease'
-    el.style.transform = 'translateX(6px)'
-    setTimeout(() => { el.style.transform = 'translateX(-5px)' }, 70)
-    setTimeout(() => { el.style.transform = 'translateX(0)'; el.style.transition = '' }, 150)
-  }
-  function swap() { const t = know; setKnow(learn as typeof know); setLearn(t as typeof learn) }
 
-  const canContinue = know && learn
+  const lang = LANGUAGES.find(l => l.id === selected)
 
   return (
-    <div className="shell">
-      <div style={{ background: 'var(--surface)', padding: '14px 20px 0', display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 600 }}>
-        <span>9:41</span>
-      </div>
+    <div style={{ minHeight: '100dvh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 0' }}>
-        <button onClick={() => router.back()} style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--surface-alt)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg viewBox="0 0 18 18" fill="none" width="18" height="18"><path d="M11 4L6 9l5 5" stroke="var(--ink-2)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </button>
-        <div style={{ display: 'flex', gap: 5 }}>
-          {[0,1,2,3].map(i => <div key={i} style={{ height: 5, borderRadius: 9999, background: i <= 1 ? 'var(--black)' : 'var(--divider)', opacity: i === 0 ? 0.35 : 1, width: i === 1 ? 24 : 5, transition: 'all 260ms var(--spring)' }} />)}
-        </div>
-        <div style={{ width: 40 }} />
-      </div>
+      {/* Sky header */}
+      <div style={{
+        background: 'linear-gradient(160deg, #C8E8FF 0%, #D8F0FF 60%, #EEF7FF 100%)',
+        padding: '52px 24px 32px',
+        position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={{ position: 'absolute', top: -50, right: -40, width: 220, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.50)', filter: 'blur(3px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: 20, left: -60, width: 180, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.35)', filter: 'blur(3px)', pointerEvents: 'none' }} />
 
-      <div style={{ padding: '24px 24px 0' }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 10 }}>Step 2 of 4</div>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: '44px', letterSpacing: '-0.025em' }}>Pick your languages<span style={{ color: 'var(--maple)' }}>.</span></h1>
-        <p style={{ marginTop: 10, fontSize: 15, lineHeight: '24px', color: 'var(--ink-2)' }}>Tell us what you speak, and what you want to learn.</p>
-      </div>
-
-      <div style={{ padding: '28px 20px 20px', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
-
-        {/* Language I know */}
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>Language I know</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {(['en', 'fr'] as const).map(l => (
-              <div key={l} id={`know-${l}`} onClick={() => pickKnow(l)} style={{ background: know === l ? (l === 'en' ? 'var(--tile-blue)' : 'var(--tile-green)') : 'var(--surface)', border: `2px solid ${know === l ? 'var(--black)' : 'var(--divider)'}`, borderRadius: 'var(--r-xl)', padding: '20px 16px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12, boxShadow: know === l ? 'var(--sh-float)' : 'var(--sh-card)', position: 'relative', transition: 'all 200ms ease' }}>
-                {know === l && <div style={{ position: 'absolute', top: 10, right: 10, width: 22, height: 22, borderRadius: '50%', background: 'var(--black)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg viewBox="0 0 11 11" fill="none" width="11" height="11"><path d="M1.5 5.5 4 8l5.5-5.5" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
-                {l === 'en' ? CANADA_FLAG : QUEBEC_FLAG}
-                <div>
-                  <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em' }}>{l === 'en' ? 'English' : 'Français'}</div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--ink-3)', marginTop: 2 }}>{l === 'en' ? 'English' : 'Québécois'}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Swap */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
-          <button onClick={swap} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--surface)', border: '1.5px solid var(--divider)', borderRadius: 9999, padding: '8px 16px', fontSize: 12, fontWeight: 600, color: 'var(--ink-2)', cursor: 'pointer', boxShadow: 'var(--sh-card)', fontFamily: 'inherit' }}>
-            <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M2 5h12M11 2l3 3-3 3M14 11H2M5 8l-3 3 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            Swap
+        {/* Back + step dots */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, position: 'relative', zIndex: 1 }}>
+          <button onClick={() => router.back()} style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.70)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(26,46,59,0.10)' }}>
+            <svg viewBox="0 0 18 18" fill="none" width="18" height="18"><path d="M11 4L6 9l5 5" stroke="var(--ink-2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
-          <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            {[0,1,2,3].map(i => (
+              <div key={i} style={{ height: 6, borderRadius: 9999, background: i === 1 ? 'var(--primary)' : i < 1 ? 'rgba(255,112,67,0.40)' : 'rgba(255,255,255,0.50)', width: i === 1 ? 24 : 6, transition: 'all 260ms var(--spring)' }} />
+            ))}
+          </div>
+          <div style={{ width: 40 }} />
         </div>
 
-        {/* Language I want to learn */}
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 12 }}>Language I want to learn</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {(['en', 'fr'] as const).map(l => (
-              <div key={l} id={`learn-${l}`} onClick={() => pickLearn(l)} style={{ background: learn === l ? (l === 'en' ? 'var(--tile-blue)' : 'var(--tile-green)') : 'var(--surface)', border: `2px solid ${learn === l ? 'var(--black)' : 'var(--divider)'}`, borderRadius: 'var(--r-xl)', padding: '20px 16px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12, boxShadow: learn === l ? 'var(--sh-float)' : 'var(--sh-card)', position: 'relative', transition: 'all 200ms ease' }}>
-                {learn === l && <div style={{ position: 'absolute', top: 10, right: 10, width: 22, height: 22, borderRadius: '50%', background: 'var(--black)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg viewBox="0 0 11 11" fill="none" width="11" height="11"><path d="M1.5 5.5 4 8l5.5-5.5" stroke="#fff" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
-                {l === 'en' ? CANADA_FLAG : QUEBEC_FLAG}
-                <div>
-                  <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.01em' }}>{l === 'en' ? 'English' : 'Français'}</div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--ink-3)', marginTop: 2 }}>{l === 'en' ? 'English' : 'Québécois'}</div>
-                </div>
+        {/* Headline */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(26,46,59,0.55)', marginBottom: 8 }}>Step 2 of 4</div>
+          <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-0.025em', lineHeight: '40px' }}>
+            What would you<br />like to learn<span style={{ color: 'var(--primary)' }}>?</span>
+          </h1>
+          <p style={{ fontSize: 15, color: 'var(--ink-2)', marginTop: 10, fontWeight: 600, lineHeight: '22px' }}>
+            Pick the language you want to learn. More languages coming soon!
+          </p>
+        </div>
+      </div>
+
+      {/* Language cards */}
+      <div style={{ flex: 1, padding: '24px 20px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+        {LANGUAGES.map(lang => (
+          <div
+            key={lang.id}
+            onClick={() => setSelected(lang.id)}
+            style={{
+              background: selected === lang.id ? lang.bg : 'var(--surface)',
+              borderRadius: 24,
+              border: `2.5px solid ${selected === lang.id ? lang.color : 'transparent'}`,
+              padding: '20px 20px',
+              cursor: 'pointer',
+              boxShadow: selected === lang.id ? `0 8px 28px ${lang.color}25` : 'var(--sh-card)',
+              transition: 'all 200ms var(--spring)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Selected checkmark */}
+            {selected === lang.id && (
+              <div style={{ position: 'absolute', top: 14, right: 14, width: 26, height: 26, borderRadius: '50%', background: lang.color, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'bounce-in 280ms var(--spring) both' }}>
+                <svg viewBox="0 0 13 13" fill="none" width="13" height="13"><path d="M2 6.5 5 9.5l6-6" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
-            ))}
+            )}
+
+            {/* Flag */}
+            <div style={{ flexShrink: 0, borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 8px rgba(26,46,59,0.15)' }}>
+              {lang.flag}
+            </div>
+
+            {/* Info */}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-0.01em', lineHeight: '26px' }}>
+                {lang.name}
+              </div>
+              <div style={{ fontSize: 13, color: 'var(--ink-2)', fontWeight: 700, marginTop: 2 }}>{lang.native}</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 6, lineHeight: '16px', fontWeight: 600 }}>{lang.desc}</div>
+            </div>
+          </div>
+        ))}
+
+        {/* Callout */}
+        <div style={{ background: 'var(--surface)', borderRadius: 'var(--r-lg)', padding: '14px 16px', display: 'flex', gap: 10, alignItems: 'flex-start', boxShadow: 'var(--sh-card)', marginTop: 4 }}>
+          <span style={{ fontSize: 20, flexShrink: 0 }}>🍁</span>
+          <div style={{ fontSize: 13, lineHeight: '20px', color: 'var(--ink-2)', fontWeight: 600 }}>
+            <strong style={{ color: 'var(--ink)' }}>Quebec French</strong> uses everyday Québécois expressions — not textbook French from France.
           </div>
         </div>
 
-        {canContinue && (
-          <div style={{ background: 'var(--tile-green)', borderRadius: 'var(--r-lg)', padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'center', animation: 'card-in 280ms var(--spring) both' }}>
-            <span style={{ fontSize: 22 }}>🎯</span>
-            <div style={{ fontSize: 13, fontWeight: 500 }}>You speak <strong>{know === 'en' ? 'English' : 'Québécois French'}</strong> and are learning <strong>{learn === 'en' ? 'English' : 'Québécois French'}</strong>.</div>
+        {/* Summary */}
+        {selected && lang && (
+          <div style={{ background: lang.bg, borderRadius: 'var(--r-lg)', padding: '12px 16px', display: 'flex', gap: 10, alignItems: 'center', border: `1.5px solid ${lang.color}30`, animation: 'float-up 250ms var(--spring) both' }}>
+            <span style={{ fontSize: 20 }}>{lang.emoji}</span>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink)' }}>
+              You&apos;re learning <strong>{lang.name}</strong> — great choice!
+            </div>
           </div>
         )}
 
-        <div style={{ background: 'var(--surface-alt)', borderRadius: 'var(--r-md)', padding: '12px 14px', display: 'flex', gap: 10 }}>
-          <span>🍁</span>
-          <span style={{ fontSize: 13, lineHeight: '20px', color: 'var(--ink-2)' }}><strong>Built for Quebec.</strong> Translations use everyday Québécois — not textbook French from France.</span>
-        </div>
       </div>
 
-      <div style={{ padding: '12px 20px 36px', background: 'var(--surface)', boxShadow: '0 -1px 0 var(--divider)' }}>
-        <button onClick={() => { if (canContinue) { localStorage.setItem('allo_know', know!); localStorage.setItem('allo_learn', learn!); router.push('/onboarding/situation') } }} disabled={!canContinue} style={{ width: '100%', height: 56, background: canContinue ? 'var(--black)' : 'var(--ink-3)', color: '#fff', border: 'none', borderRadius: 9999, fontSize: 16, fontWeight: 700, fontFamily: 'inherit', cursor: canContinue ? 'pointer' : 'not-allowed', boxShadow: canContinue ? 'var(--sh-fab)' : 'none' }}>
-          Continue →
+      {/* CTA */}
+      <div style={{ padding: '12px 20px 36px', background: 'var(--surface)', boxShadow: '0 -1px 0 rgba(86,204,242,0.15)' }}>
+        <button
+          onClick={handleContinue}
+          disabled={!selected}
+          style={{
+            width: '100%', height: 56,
+            background: selected ? 'var(--primary)' : 'var(--bg)',
+            color: selected ? '#fff' : 'var(--ink-3)',
+            border: 'none', borderRadius: 'var(--r-full)',
+            fontSize: 17, fontWeight: 800,
+            fontFamily: 'var(--font)',
+            cursor: selected ? 'pointer' : 'not-allowed',
+            boxShadow: selected ? 'var(--sh-fab)' : 'none',
+            transition: 'all 200ms var(--spring)',
+          }}
+        >
+          {selected ? `Start learning ${LANGUAGES.find(l => l.id === selected)?.name} →` : 'Choose a language'}
         </button>
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-3)', marginTop: 12 }}>
-          Already have an account? <a href="/login" style={{ color: 'var(--ink)', fontWeight: 600 }}>Sign in</a>
-        </p>
       </div>
+
     </div>
   )
 }

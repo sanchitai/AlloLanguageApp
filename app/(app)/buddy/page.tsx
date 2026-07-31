@@ -2,53 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-
-const PHRASE_PACKS = {
-  daycare: [
-    { fr: "Bonjour, je viens chercher mon enfant.", en: "Hello, I'm here to pick up my child.", emergency: false },
-    { fr: "Comment s'est passée sa journée aujourd'hui?", en: "How was his/her day today?", emergency: false },
-    { fr: "A-t-il/elle bien mangé?", en: "Did he/she eat well?", emergency: false },
-    { fr: "A-t-il/elle fait sa sieste?", en: "Did he/she have a nap?", emergency: false },
-    { fr: "Y a-t-il quelque chose d'important à savoir?", en: "Is there anything important I should know?", emergency: false },
-    { fr: "À quelle heure dois-je le/la déposer demain?", en: "What time should I drop him/her off tomorrow?", emergency: false },
-    { fr: "Merci beaucoup, bonne soirée!", en: "Thank you very much, have a good evening!", emergency: false },
-    { fr: "Mon enfant a des allergies — c'est très important.", en: "My child has allergies — this is very important.", emergency: true },
-    { fr: "Appelez-moi immédiatement s'il y a un problème.", en: "Call me immediately if there is a problem.", emergency: true },
-    { fr: "Mon enfant ne se sent pas bien aujourd'hui.", en: "My child is not feeling well today.", emergency: true },
-  ],
-  medical: [
-    { fr: "Bonjour, j'ai un rendez-vous.", en: "Hello, I have an appointment.", emergency: false },
-    { fr: "Je ne parle pas très bien français.", en: "I don't speak French very well.", emergency: false },
-    { fr: "Pouvez-vous parler plus lentement, s'il vous plaît?", en: "Can you speak more slowly, please?", emergency: false },
-    { fr: "J'ai mal ici depuis quelques jours.", en: "It has been hurting here for a few days.", emergency: false },
-    { fr: "Je prends ces médicaments.", en: "I am taking these medications.", emergency: false },
-    { fr: "Je suis allergique à la pénicilline.", en: "I am allergic to penicillin.", emergency: true },
-    { fr: "C'est une urgence. Appelez le 911.", en: "This is an emergency. Call 911.", emergency: true },
-  ],
-  work: [
-    { fr: "Bonjour, je suis nouveau/nouvelle ici.", en: "Hello, I am new here.", emergency: false },
-    { fr: "Enchanté(e) de vous rencontrer.", en: "Nice to meet you.", emergency: false },
-    { fr: "Pourriez-vous m'expliquer ça, s'il vous plaît?", en: "Could you explain that to me, please?", emergency: false },
-    { fr: "Je ne comprends pas encore tout, mais j'apprends.", en: "I don't understand everything yet, but I'm learning.", emergency: false },
-    { fr: "À quelle heure commence la réunion?", en: "What time does the meeting start?", emergency: false },
-    { fr: "Merci pour votre patience.", en: "Thank you for your patience.", emergency: false },
-  ],
-  food: [
-    { fr: "Bonjour, une table pour deux, s'il vous plaît.", en: "Hello, a table for two, please.", emergency: false },
-    { fr: "Qu'est-ce que vous recommandez aujourd'hui?", en: "What do you recommend today?", emergency: false },
-    { fr: "Je suis végétarien(ne).", en: "I am vegetarian.", emergency: false },
-    { fr: "L'addition, s'il vous plaît.", en: "The bill, please.", emergency: false },
-    { fr: "Ça contient des arachides?", en: "Does this contain peanuts?", emergency: true },
-  ],
-  transport: [
-    { fr: "Excusez-moi, où est l'arrêt d'autobus?", en: "Excuse me, where is the bus stop?", emergency: false },
-    { fr: "Est-ce que ce bus va au centre-ville?", en: "Does this bus go downtown?", emergency: false },
-    { fr: "Pouvez-vous m'aider? Je suis perdu(e).", en: "Can you help me? I am lost.", emergency: false },
-    { fr: "Combien ça coûte pour aller à...?", en: "How much does it cost to get to...?", emergency: false },
-    { fr: "Pouvez-vous me dire quand descendre?", en: "Can you tell me when to get off?", emergency: false },
-  ],
-}
-
+import { getPhrasePacks, getStoredLang, getLangLabel } from '@/lib/content'
+const lang = getStoredLang()
+const PHRASE_PACKS = getPhrasePacks(lang)
+const langLabel = getLangLabel(lang)
 type PackKey = keyof typeof PHRASE_PACKS
 
 export default function BuddyPage() {
@@ -104,7 +61,7 @@ export default function BuddyPage() {
       const res = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText, fromLang, toLang: fromLang === 'en' ? 'fr' : 'en' }),
+        body: JSON.stringify({ text: inputText, fromLang, toLang: fromLang === 'en' ? lang : 'en' }),
       })
       const { translation } = await res.json()
       setSourceText(inputText)
@@ -157,15 +114,15 @@ export default function BuddyPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 16px 14px' }}>
           <div style={{ flex: 1, textAlign: 'center', padding: '10px 12px', background: 'rgba(255,255,255,0.55)', border: '1.5px solid rgba(26,95,168,0.20)', borderRadius: 'var(--r-lg)' }}>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--buddy-text-dim)', marginBottom: 2 }}>I speak</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#1A3A6B' }}>{fromLang === 'en' ? 'English' : 'Français'}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1A3A6B' }}>{fromLang === 'en' ? 'English' : langLabel.name}</div>
           </div>
           <button onClick={swapLanguages} style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--maple)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(245,158,11,0.40)', flexShrink: 0 }}>
             <svg viewBox="0 0 18 18" fill="none" width="18" height="18"><path d="M3 6h12M12 3l3 3-3 3M15 12H3M6 9l-3 3 3 3" stroke="var(--black)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
           <div style={{ flex: 1, textAlign: 'center', padding: '10px 12px', background: 'rgba(255,255,255,0.55)', border: '1.5px solid rgba(26,95,168,0.20)', borderRadius: 'var(--r-lg)' }}>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--buddy-text-dim)', marginBottom: 2 }}>Translate to</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#1A3A6B' }}>{fromLang === 'en' ? 'Français' : 'English'}</div>
-            <div style={{ fontSize: 11, color: 'var(--buddy-text-dim)', marginTop: 1 }}>{fromLang === 'en' ? 'Québécois' : 'Canadian'}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1A3A6B' }}>{fromLang === 'en' ? langLabel.name : 'English'}</div>
+            <div style={{ fontSize: 11, color: 'var(--buddy-text-dim)', marginTop: 1 }}>{fromLang === 'en' ? langLabel.native : 'Canadian'}</div>
           </div>
         </div>
       </div>
@@ -180,7 +137,7 @@ export default function BuddyPage() {
             <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--ink-2)', lineHeight: '22px' }}>{sourceText}</div>
           </div>
           <div style={{ padding: '14px 16px 10px', background: 'linear-gradient(135deg, #F3EEFF, #EDE8FB)' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#7C3AED', marginBottom: 6 }}>{fromLang === 'en' ? 'Québécois French' : 'English'}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#7C3AED', marginBottom: 6 }}>{fromLang === 'en' ? langLabel.name : 'English'}</div>
             <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: '-0.015em', color: '#2D1B6E', lineHeight: '28px' }}>{translatedText}</div>
           </div>
           <div style={{ padding: '10px 14px 12px', display: 'flex', alignItems: 'center', gap: 8, borderTop: '1px solid rgba(124,58,237,0.12)' }}>
@@ -211,7 +168,7 @@ export default function BuddyPage() {
                 whiteSpace: 'nowrap', flexShrink: 0,
                 boxShadow: activePack === k ? '0 4px 14px rgba(124,58,237,0.30)' : 'none',
               }}>
-                {packEmoji[k]} {k.charAt(0).toUpperCase() + k.slice(1)}
+                {packEmoji[String(k)]} {String(k).charAt(0).toUpperCase() + String(k).slice(1)}
               </button>
             ))}
           </div>
@@ -221,14 +178,14 @@ export default function BuddyPage() {
           {packs.map((p, i) => (
             <div key={i} style={{ background: 'var(--surface)', borderRadius: 'var(--r-lg)', padding: '12px 14px', boxShadow: 'var(--sh-card)', display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', lineHeight: '20px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.fr}</div>
-                <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.en}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', lineHeight: '20px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.target}</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.native}</div>
               </div>
               {p.emergency && <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', padding: '2px 7px', borderRadius: 9999, background: 'var(--tile-pink)', color: 'var(--tile-pink-ink)', flexShrink: 0 }}>Urgent</span>}
-              <button onClick={() => playTTS(p.fr)} style={{ width: 36, height: 36, borderRadius: '50%', background: '#EDE8FB', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <button onClick={() => playTTS(p.target)} style={{ width: 36, height: 36, borderRadius: '50%', background: '#EDE8FB', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><polygon points="2,2 12,7 2,12" fill="#7C3AED"/></svg>
               </button>
-              <button onClick={() => openLoud(p.fr, p.en)} style={{ width: 36, height: 36, borderRadius: '50%', background: '#7C3AED', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(124,58,237,0.35)' }}>
+              <button onClick={() => openLoud(p.target, p.native)} style={{ width: 36, height: 36, borderRadius: '50%', background: '#7C3AED', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(124,58,237,0.35)' }}>
                 <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d="M4 7h6M7 4l3 3-3 3" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
             </div>

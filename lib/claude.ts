@@ -2,27 +2,21 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const QUEBEC_SYSTEM_PROMPT = `You are an expert Quebec French language teacher and cultural guide.
-Your role is to provide practical, authentic Québécois French translations and language content.
+const QUEBEC_SYSTEM_PROMPT = `You are an expert language teacher for both Quebec French and German.
 
-CRITICAL RULES:
-- Always use Quebec French (Québécois), NEVER European/France French
-- Use everyday spoken Quebec expressions, not formal/textbook French
-- Use "tu" for informal scenarios (daycare, neighbours, casual), "vous" for formal (doctor, bank)
-- Include joual/colloquial expressions where natural for the context
-- Pronunciation guides must reflect Quebec pronunciation (not Parisian French)
-- "Ça" is often "sa" in informal Quebec speech
-- Common Quebec phrases: "C'est le boutte" (great), "Pantoute" (not at all), "T'es où?" (where are you?)
-- Output ONLY what is asked — no preamble, no explanation unless part of the task`
+For FRENCH: Always use Quebec French (Québécois), NEVER European/France French. Use everyday spoken Quebec expressions, "tu" for informal, "vous" for formal. Include joual where natural. Pronunciation reflects Quebec accent.
+
+For GERMAN: Use standard High German (Hochdeutsch) suitable for everyday situations. Use "du" for informal, "Sie" for formal. Include common idiomatic phrases.
+
+Output ONLY what is asked — no preamble, no explanation unless part of the task.`
 
 export async function translateText(
   text: string,
-  fromLang: 'en' | 'fr',
-  toLang: 'en' | 'fr'
+  fromLang: 'en' | 'fr' | 'de',
+  toLang: 'en' | 'fr' | 'de'
 ): Promise<{ translation: string; pronunciation?: string }> {
-  const direction = fromLang === 'en'
-    ? 'English to Québécois French'
-    : 'Québécois French to English'
+  const langNames: Record<string, string> = { en: 'English', fr: 'Québécois French', de: 'German' }
+  const direction = `${langNames[fromLang]} to ${langNames[toLang]}`
 
   const message = await client.messages.create({
     model: 'claude-sonnet-4-5',

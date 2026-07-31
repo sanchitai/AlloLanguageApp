@@ -1,21 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-
-const PRESET_SCENARIOS = [
-  { id: 'preset-daycare', title: 'French Daycare Pickup', category: 'daycare', emoji: '👶', desc: 'Talk to daycare staff about your child\'s day', cardCount: 28 },
-  { id: 'preset-medical', title: 'Doctor\'s Appointment', category: 'medical', emoji: '🏥', desc: 'Navigate a medical visit in French', cardCount: 22 },
-  { id: 'preset-work', title: 'First Day at Work', category: 'work', emoji: '💼', desc: 'Introduce yourself and navigate the workplace', cardCount: 24 },
-  { id: 'preset-ptmeeting', title: 'Parent-Teacher Meeting', category: 'daycare', emoji: '🏫', desc: 'Discuss your child\'s progress with teachers', cardCount: 20 },
-  { id: 'preset-pharmacy', title: 'Pharmacy Visit', category: 'medical', emoji: '💊', desc: 'Pick up prescriptions and ask about medications', cardCount: 18 },
-  { id: 'preset-neighbours', title: 'Chatting with Neighbours', category: 'social', emoji: '🏠', desc: 'Small talk with your Quebec neighbours', cardCount: 16 },
-  { id: 'preset-restaurant', title: 'Restaurant Ordering', category: 'food', emoji: '🍽️', desc: 'Order food and handle special requests', cardCount: 20 },
-  { id: 'preset-grocery', title: 'Grocery Shopping', category: 'food', emoji: '🛒', desc: 'Navigate a French grocery store', cardCount: 15 },
-  { id: 'preset-transit', title: 'Public Transit', category: 'transport', emoji: '🚌', desc: 'Take the bus or metro in Montreal', cardCount: 14 },
-  { id: 'preset-bank', title: 'Bank Appointment', category: 'services', emoji: '🏦', desc: 'Handle banking transactions in French', cardCount: 18 },
-  { id: 'preset-birthday', title: 'Children\'s Birthday Party', category: 'social', emoji: '🎉', desc: 'Socialise at a Quebec kids\' birthday party', cardCount: 14 },
-  { id: 'preset-airport', title: 'Airport & Travel', category: 'transport', emoji: '✈️', desc: 'Navigate airports and travel in French Canada', cardCount: 16 },
-]
+import { PRESET_SCENARIOS } from '@/lib/content'
 
 const CATEGORY_COLORS: Record<string, { bg: string; ink: string }> = {
   daycare:   { bg: '#DCEEFB', ink: '#1A5FA8' },
@@ -101,7 +87,7 @@ export default async function ScenariosPage() {
                   <div style={{ fontSize: 28, lineHeight: 1 }}>{s.emoji}</div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', lineHeight: '18px' }}>{s.title}</div>
-                    <div style={{ fontSize: 11, fontWeight: 500, color: col.ink, marginTop: 2 }}>{s.cardCount} cards</div>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: col.ink, marginTop: 2 }}>{s.desc}</div>
                   </div>
                 </Link>
               )
