@@ -61,6 +61,11 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
     utt.lang = langLabel.tts
     utt.rate = 0.82
     utt.pitch = 1.0
+    // Try to pick the best available voice
+    const voices = window.speechSynthesis.getVoices()
+    const match = voices.find(v => v.lang.startsWith(langLabel.tts.split('-')[0]) && /google|premium|neural/i.test(v.name))
+      || voices.find(v => v.lang.startsWith(langLabel.tts.split('-')[0]))
+    if (match) utt.voice = match
     window.speechSynthesis.speak(utt)
   }
 

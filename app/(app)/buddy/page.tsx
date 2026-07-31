@@ -51,16 +51,38 @@ export default function BuddyPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, gender: cachedGender }),
       })
-      const { url } = await res.json()
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        console.error('TTS API error:', res.status, err)
+        setIsPlaying(false)
+        return
+      }
+
+      const data = await res.json()
+      const url = data?.url
+
       if (url) {
-        if (audioRef.current) audioRef.current.pause()
+        if (audioRef.current) {
+          audioRef.current.pause()
+          audioRef.current.src = ''
+        }
         const audio = new Audio(url)
         audioRef.current = audio
         audio.onended = () => setIsPlaying(false)
-        audio.onerror = () => setIsPlaying(false)
-        await audio.play()
+        audio.onerror = (e) => { console.error('Audio playback error:', e); setIsPlaying(false) }
+        try {
+          await audio.play()
+        } catch (playErr) {
+          console.error('audio.play() failed:', playErr)
+          setIsPlaying(false)
+        }
+      } else {
+        console.error('No URL returned from TTS API', data)
+        setIsPlaying(false)
       }
-    } catch {
+    } catch (err) {
+      console.error('playTTS fetch error:', err)
       setIsPlaying(false)
     }
   }
