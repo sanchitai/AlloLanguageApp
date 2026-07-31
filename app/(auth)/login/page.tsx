@@ -73,8 +73,19 @@ function LoginForm() {
 
       <div style={S.card}>
         <div style={S.logo}>
-          <div style={S.logoText}>Allo<span style={S.logoDot}>.</span></div>
-          <div style={S.tagline}>Welcome back 👋</div>
+          {/* Option 5 logo — two overlapping speech bubbles */}
+          <svg viewBox="0 0 240 72" fill="none" width="200" style={{ display: 'block', margin: '0 auto' }}>
+            <rect x="0" y="0" width="36" height="28" rx="10" fill="#56CCF2"/>
+            <polygon points="5,28 18,28 11,40" fill="#56CCF2"/>
+            <rect x="18" y="22" width="36" height="28" rx="10" fill="#FF7043"/>
+            <polygon points="37,50 50,50 43,62" fill="#FF7043"/>
+            <text x="66" y="50" fontFamily="Nunito, sans-serif" fontWeight="900" fontSize="48" fill="#1A2E3B" letterSpacing="-1.5">Allo</text>
+            <circle cx="232" cy="54" r="6" fill="#56CCF2"/>
+          </svg>
+          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'var(--ink-3)', marginTop: 10, textAlign: 'center' as const }}>
+            LEARN FOR YOUR MOMENT
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 8, fontWeight: 600, textAlign: 'center' as const }}>Welcome back 👋</div>
         </div>
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

@@ -59,10 +59,16 @@ export default function SignupPage() {
       <div style={S.blob1} /><div style={S.blob2} />
       <div style={S.card}>
         <div style={S.logo}>
-          <div style={{ fontSize: 42, fontWeight: 900, color: 'var(--ink)', letterSpacing: '-0.02em', lineHeight: 1 }}>
-            Allo<span style={{ color: 'var(--primary)' }}>.</span>
-          </div>
-          <div style={{ fontSize: 14, color: 'var(--ink-3)', marginTop: 4, fontWeight: 600 }}>Create your account</div>
+          <svg viewBox="0 0 240 72" fill="none" width="180" style={{ display: 'block', margin: '0 auto' }}>
+            <rect x="0" y="0" width="36" height="28" rx="10" fill="#56CCF2"/>
+            <polygon points="5,28 18,28 11,40" fill="#56CCF2"/>
+            <rect x="18" y="22" width="36" height="28" rx="10" fill="#FF7043"/>
+            <polygon points="37,50 50,50 43,62" fill="#FF7043"/>
+            <text x="66" y="50" fontFamily="Nunito, sans-serif" fontWeight="900" fontSize="48" fill="#1A2E3B" letterSpacing="-1.5">Allo</text>
+            <circle cx="232" cy="54" r="6" fill="#56CCF2"/>
+          </svg>
+          <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'var(--ink-3)', marginTop: 8, textAlign: 'center' as const }}>LEARN FOR YOUR MOMENT</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-3)', marginTop: 6, fontWeight: 600, textAlign: 'center' as const }}>Create your account</div>
         </div>
 
         <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

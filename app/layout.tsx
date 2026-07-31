@@ -10,15 +10,15 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: 'Allo — Learn Quebec French',
-  description: 'Scenario-based Quebec French ↔ English language learning. Built for people in Quebec who need to communicate confidently in real-life situations.',
+  title: 'Allo — Learn for Your Moment',
+  description: 'Learn exactly the language you need for your real-life situation. Quebec French, German and more — scenario-based, practical, fast.',
   manifest: '/manifest.json',
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Allo' },
   formatDetection: { telephone: false },
   openGraph: {
     type: 'website',
-    title: 'Allo — Learn Quebec French',
-    description: 'Learn exactly the French you need for your real-life situation.',
+    title: 'Allo — Learn for Your Moment',
+    description: 'Learn exactly the language you need for your real-life situation.',
     siteName: 'Allo',
   },
 }
@@ -38,6 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+        <link rel="icon" href="/icons/favicon-32x32.png" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body style={{ fontFamily: "'Nunito', sans-serif" }}>{children}</body>

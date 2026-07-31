@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Allo — Logo + Tagline Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #EEF7FF; font-family: 'Nunito', sans-serif; padding: 40px 20px 60px; -webkit-font-smoothing: antialiased; }
+    h1 { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #94AFC0; margin-bottom: 8px; }
+    .sub { text-align: center; font-size: 14px; color: #B0C4D0; font-weight: 600; margin-bottom: 40px; }
+
+    /* Logo showcase at top */
+    .logo-hero {
+      max-width: 700px; margin: 0 auto 48px;
+      background: white; border-radius: 28px;
+      padding: 40px 32px; box-shadow: 0 6px 32px rgba(26,46,59,0.09);
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+    }
+    .logo-hero-title { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #B0C4D0; }
+    .logo-variants { display: flex; gap: 32px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .dark-box { background: #1A2E3B; border-radius: 18px; padding: 22px 32px; display: flex; align-items: center; justify-content: center; }
+
+    /* Tagline grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; max-width: 960px; margin: 0 auto; }
+    .card {
+      background: white; border-radius: 22px; padding: 28px 24px;
+      box-shadow: 0 3px 16px rgba(26,46,59,0.07);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .card-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+    .tagline-preview { display: flex; flex-direction: column; gap: 12px; }
+    .tl-light { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .tl-dark { background: #1A2E3B; border-radius: 14px; padding: 16px 20px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .tl-text { font-size: 12px; font-weight: 700; letter-spacing: 0.03em; text-align: center; }
+    .note { font-size: 12px; color: #7090A0; line-height: 18px; font-weight: 600; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h1>Option 5 — Final Logo</h1>
+<div class="sub">Two overlapping speech bubbles · All tagline options below</div>
+
+<!-- ── LOGO SHOWCASE ─────────────────────────────────────────── -->
+<div class="logo-hero">
+  <div class="logo-hero-title">Logo on light + dark · icon + full wordmark</div>
+  <div class="logo-variants">
+
+    <!-- Full wordmark light -->
+    <svg viewBox="0 0 240 72" fill="none" width="240">
+      <rect x="0" y="0" width="36" height="28" rx="10" fill="#56CCF2"/>
+      <polygon points="5,28 18,28 11,40" fill="#56CCF2"/>
+      <rect x="18" y="22" width="36" height="28" rx="10" fill="#FF7043"/>
+      <polygon points="37,50 50,50 43,62" fill="#FF7043"/>
+      <text x="66" y="50" font-family="Nunito, sans-serif" font-weight="900" font-size="48" fill="#1A2E3B" letter-spacing="-1.5">Allo</text>
+      <circle cx="232" cy="54" r="6" fill="#56CCF2"/>
+    </svg>
+
+    <!-- App icon rounded square -->
+    <svg viewBox="0 0 64 64" fill="none" width="64">
+      <rect width="64" height="64" rx="18" fill="#1A2E3B"/>
+      <rect x="6"  y="8"  width="30" height="22" rx="8" fill="#56CCF2"/>
+      <polygon points="8,30 18,30 13,40" fill="#56CCF2"/>
+      <rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/>
+      <polygon points="40,46 50,46 45,58" fill="#FF7043"/>
+    </svg>
+
+    <!-- Full wordmark dark -->
+    <div class="dark-box">
+      <svg viewBox="0 0 240 72" fill="none" width="220">
+        <rect x="0" y="0" width="36" height="28" rx="10" fill="#56CCF2"/>
+        <polygon points="5,28 18,28 11,40" fill="#56CCF2"/>
+        <rect x="18" y="22" width="36" height="28" rx="10" fill="#FF7043"/>
+        <polygon points="37,50 50,50 43,62" fill="#FF7043"/>
+        <text x="66" y="50" font-family="Nunito, sans-serif" font-weight="900" font-size="48" fill="#FFFFFF" letter-spacing="-1.5">Allo</text>
+        <circle cx="232" cy="54" r="6" fill="#56CCF2"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- Sizing strip -->
+  <div style="display:flex;gap:20px;align-items:center;padding-top:16px;border-top:1px solid #F0F4F8;">
+    <!-- 512px -->
+    <svg viewBox="0 0 64 64" fill="none" width="56"><rect width="64" height="64" rx="18" fill="#1A2E3B"/><rect x="6" y="8" width="30" height="22" rx="8" fill="#56CCF2"/><polygon points="8,30 18,30 13,40" fill="#56CCF2"/><rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/><polygon points="40,46 50,46 45,58" fill="#FF7043"/></svg>
+    <!-- 192px -->
+    <svg viewBox="0 0 64 64" fill="none" width="40"><rect width="64" height="64" rx="18" fill="#1A2E3B"/><rect x="6" y="8" width="30" height="22" rx="8" fill="#56CCF2"/><polygon points="8,30 18,30 13,40" fill="#56CCF2"/><rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/><polygon points="40,46 50,46 45,58" fill="#FF7043"/></svg>
+    <!-- 96px -->
+    <svg viewBox="0 0 64 64" fill="none" width="28"><rect width="64" height="64" rx="18" fill="#1A2E3B"/><rect x="6" y="8" width="30" height="22" rx="8" fill="#56CCF2"/><polygon points="8,30 18,30 13,40" fill="#56CCF2"/><rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/><polygon points="40,46 50,46 45,58" fill="#FF7043"/></svg>
+    <!-- 32px -->
+    <svg viewBox="0 0 64 64" fill="none" width="20"><rect width="64" height="64" rx="18" fill="#1A2E3B"/><rect x="6" y="8" width="30" height="22" rx="8" fill="#56CCF2"/><polygon points="8,30 18,30 13,40" fill="#56CCF2"/><rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/><polygon points="40,46 50,46 45,58" fill="#FF7043"/></svg>
+    <!-- 16px -->
+    <svg viewBox="0 0 64 64" fill="none" width="14"><rect width="64" height="64" rx="18" fill="#1A2E3B"/><rect x="6" y="8" width="30" height="22" rx="8" fill="#56CCF2"/><polygon points="8,30 18,30 13,40" fill="#56CCF2"/><rect x="22" y="24" width="36" height="22" rx="8" fill="#FF7043"/><polygon points="40,46 50,46 45,58" fill="#FF7043"/></svg>
+    <span style="font-size:11px;font-weight:700;color:#B0C4D0;letter-spacing:0.05em">512 · 192 · 96 · 32 · 16</span>
+  </div>
+</div>
+
+<!-- ── TAGLINE OPTIONS ────────────────────────────────────────── -->
+<div class="grid">
+
+  <!-- 1 -->
+  <div class="card">
+    <div class="card-tag" style="color:#56CCF2">Tagline 1 — Action</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 240 88" fill="none" width="220">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="13" fill="#94AFC0" letter-spacing="0.12em">SPEAK IT. LIVE IT.</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 240 88" fill="none" width="200">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="13" fill="rgba(255,255,255,0.45)" letter-spacing="0.12em">SPEAK IT. LIVE IT.</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Punchy 3-word call to action. Implies real-world usage, not just studying. Confident tone.</div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <div class="card-tag" style="color:#FF7043">Tagline 2 — Situation-first</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 260 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.1em">LEARN FOR YOUR MOMENT</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 260 88" fill="none" width="220">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">LEARN FOR YOUR MOMENT</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Positions Allo's core differentiator — situation-specific learning. "Your moment" is personal and urgent.</div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <div class="card-tag" style="color:#27AE60">Tagline 3 — Quebec soul</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 260 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.1em">FROM BONJOUR TO BELONGING</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 260 88" fill="none" width="225">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">FROM BONJOUR TO BELONGING</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Emotionally resonant — the real goal isn't words, it's feeling at home in Quebec. "Belonging" is powerful for newcomers.</div>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <div class="card-tag" style="color:#7C4DFF">Tagline 4 — Confidence</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 260 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.1em">CONFIDENT IN ANY LANGUAGE</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 260 88" fill="none" width="225">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">CONFIDENT IN ANY LANGUAGE</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">The emotional outcome users want — confidence. Scalable beyond French/German. Works for future languages too.</div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <div class="card-tag" style="color:#FF7043">Tagline 5 — Warmth</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 260 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.1em">LANGUAGE THAT FEELS REAL</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 260 88" fill="none" width="225">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">LANGUAGE THAT FEELS REAL</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Contrasts Allo with generic apps — "real" signals authentic, situational, not textbook. Warm and direct.</div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <div class="card-tag" style="color:#56CCF2">Tagline 6 — Speed</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 260 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.1em">FLUENT FAST</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 260 88" fill="none" width="225">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.1em">FLUENT FAST</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Two words, maximum punch. Alliteration makes it sticky. Works on app stores, ads, and landing pages.</div>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <div class="card-tag" style="color:#FFB020">Tagline 7 — Quebec specific</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 270 88" fill="none" width="250">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.08em">YOUR QUEBECOIS COMPANION</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 270 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.08em">YOUR QUEBECOIS COMPANION</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Leans into the Quebec identity and feels personal — "companion" implies a helpful friend, not a course. Warm + local.</div>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <div class="card-tag" style="color:#FF4081">Tagline 8 — Real life hero</div>
+    <div class="tagline-preview">
+      <div class="tl-light">
+        <svg viewBox="0 0 270 88" fill="none" width="250">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="#1A2E3B" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="#94AFC0" letter-spacing="0.08em">TALK YOUR WAY THROUGH LIFE</text>
+        </svg>
+      </div>
+      <div class="tl-dark">
+        <svg viewBox="0 0 270 88" fill="none" width="240">
+          <rect x="0" y="0" width="32" height="24" rx="8" fill="#56CCF2"/>
+          <polygon points="4,24 16,24 10,34" fill="#56CCF2"/>
+          <rect x="16" y="18" width="32" height="24" rx="8" fill="#FF7043"/>
+          <polygon points="33,42 44,42 38,52" fill="#FF7043"/>
+          <text x="60" y="42" font-family="Nunito, sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">Allo</text>
+          <text x="60" y="70" font-family="Nunito, sans-serif" font-weight="700" font-size="12.5" fill="rgba(255,255,255,0.45)" letter-spacing="0.08em">TALK YOUR WAY THROUGH LIFE</text>
+        </svg>
+      </div>
+    </div>
+    <div class="note">Playful and empowering. "Talk your way through life" implies real situations — daycare, doctor, work — not a classroom.</div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:36px;font-size:12px;color:#94AFC0;font-weight:700;letter-spacing:0.05em;">
+  PICK A TAGLINE AND I'LL BUILD ALL PWA ICONS + ADD TO THE APP
+</p>
+
+</body>
+</html>
