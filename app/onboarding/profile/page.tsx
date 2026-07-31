@@ -43,8 +43,9 @@ export default function OnboardingProfilePage() {
       const mode = localStorage.getItem('allo_mode') ?? 'learn'
       const nativeLang = localStorage.getItem('allo_know') ?? 'en'
       const targetLang = localStorage.getItem('allo_learn') ?? 'fr'
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase.from('profiles') as any).upsert({
+      const { error } = await (supabase.from('profiles') as any).upsert({
         id: user.id,
         display_name: name.trim(),
         app_mode: mode as 'learn' | 'buddy',
@@ -55,11 +56,20 @@ export default function OnboardingProfilePage() {
         onboarding_done: true,
         voice_gender: 'female',
       })
+
+      if (error) {
+        console.error('Profile save error:', error)
+        setSaving(false)
+        return
+      }
+
+      // Small delay to ensure Supabase propagates before server-side read
+      await new Promise(r => setTimeout(r, 500))
     }
 
     setSaving(false)
-    router.push('/')
-    router.refresh()
+    // Use window.location for a full page reload so server reads fresh profile
+    window.location.href = '/'
   }
 
   const canLaunch = name.trim().length >= 1

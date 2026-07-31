@@ -31,7 +31,12 @@ export default async function DashboardPage() {
   const isGuest = cookieStore.get('allo_guest')?.value === 'true'
 
   if (isGuest) {
-    return <DashboardClient profile={GUEST_PROFILE} scenarios={[]} learnedCount={0} isGuest={true} />
+    // Guest profile — onboarding_done forced true so dashboard renders
+    const guestProfile: Profile = {
+      ...GUEST_PROFILE,
+      onboarding_done: true,
+    }
+    return <DashboardClient profile={guestProfile} scenarios={[]} learnedCount={0} isGuest={true} />
   }
 
   const supabase = await createClient()
