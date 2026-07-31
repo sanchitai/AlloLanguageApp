@@ -25,21 +25,18 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect all app routes
-  const isAppRoute = pathname.startsWith('/') &&
-    !pathname.startsWith('/login') &&
-    !pathname.startsWith('/signup') &&
-    !pathname.startsWith('/onboarding') &&
-    !pathname.startsWith('/api') &&
-    !pathname.startsWith('/_next') &&
-    !pathname.startsWith('/icons') &&
-    !pathname.startsWith('/screenshots') &&
-    pathname !== '/manifest.json' &&
-    pathname !== '/favicon.ico'
+  // Check if user chose guest mode
+  const isGuest = request.cookies.get('allo_guest')?.value === 'true'
 
-  if (isAppRoute && !user) {
+  // Profile page requires auth — guests get redirected to login
+  const requiresAuth = pathname === '/profile'
+
+  if (requiresAuth && !user && !isGuest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
+
+  // All other app routes: allow through for both authed users AND guests
+  // (guest mode lets users use buddy/flashcards/scenarios without saving progress)
 
   // Redirect logged-in users away from auth pages
   if (user && (pathname === '/login' || pathname === '/signup')) {

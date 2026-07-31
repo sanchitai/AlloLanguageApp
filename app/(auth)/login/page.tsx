@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
@@ -48,6 +48,12 @@ export default function LoginPage() {
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/api/auth/callback` },
     })
+  }
+
+  async function handleGuest() {
+    // Set guest cookie and go straight to onboarding
+    document.cookie = 'allo_guest=true; path=/; max-age=2592000' // 30 days
+    router.push('/onboarding/mode')
   }
 
   return (
@@ -133,11 +139,38 @@ export default function LoginPage() {
           Continue with Google
         </button>
 
+        {/* Guest mode separator */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
+          <span style={{ fontSize: 12, color: 'var(--ink-3)', fontWeight: 600 }}>or</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--divider)' }} />
+        </div>
+
+        <button
+          onClick={handleGuest}
+          style={{ height: 52, background: 'var(--surface-alt)', border: '1.5px dashed var(--divider)', borderRadius: 'var(--r-full)', fontSize: 15, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, color: 'var(--ink-2)' }}
+        >
+          <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="M10 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" strokeWidth="1.5"/><path d="M2 18c0-3.31 3.58-6 8-6s8 2.69 8 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          Try as Guest — no sign up needed
+        </button>
+
+        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-3)', lineHeight: '18px' }}>
+          Guest mode: full access to Buddy &amp; Flashcards.<br/>Progress and profile not saved.
+        </p>
+
         <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--ink-3)' }}>
           Don&apos;t have an account?{' '}
           <Link href="/signup" style={{ color: 'var(--ink)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 2 }}>Sign up</Link>
         </p>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ fontSize: 14, color: 'var(--ink-3)' }}>Loading…</div></div>}>
+      <LoginForm />
+    </Suspense>
   )
 }

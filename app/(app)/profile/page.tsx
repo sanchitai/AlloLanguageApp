@@ -19,6 +19,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function load() {
+      // Check for guest mode
+      if (document.cookie.includes('allo_guest=true')) {
+        router.push('/login')
+        return
+      }
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }

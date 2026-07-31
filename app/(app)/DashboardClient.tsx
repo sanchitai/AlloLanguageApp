@@ -30,10 +30,11 @@ function getGreeting() {
   return 'Good evening'
 }
 
-export default function DashboardClient({ profile, scenarios, learnedCount }: {
+export default function DashboardClient({ profile, scenarios, learnedCount, isGuest = false }: {
   profile: Profile
   scenarios: Scenario[]
   learnedCount: number
+  isGuest?: boolean
 }) {
   const ringRef = useRef<SVGCircleElement>(null)
   const today = new Date().toLocaleDateString('en-CA')
@@ -101,6 +102,18 @@ export default function DashboardClient({ profile, scenarios, learnedCount }: {
 
       {/* Feed */}
       <div style={{ padding: '16px 16px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Guest banner */}
+        {isGuest && (
+          <div style={{ background: 'var(--tile-yellow)', borderRadius: 'var(--r-xl)', padding: '14px 16px', display: 'flex', gap: 12, alignItems: 'center', border: '1.5px solid rgba(245,158,11,0.20)' }}>
+            <span style={{ fontSize: 22, flexShrink: 0 }}>👋</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tile-yellow-ink)' }}>You&apos;re using Guest Mode</div>
+              <div style={{ fontSize: 12, color: 'var(--tile-yellow-ink)', marginTop: 2, opacity: 0.8 }}>Progress won&apos;t be saved. Create a free account to unlock streaks, saved scenarios, and your profile.</div>
+            </div>
+            <a href="/signup" style={{ background: 'var(--maple)', color: '#fff', borderRadius: 'var(--r-full)', padding: '7px 14px', fontSize: 12, fontWeight: 700, textDecoration: 'none', flexShrink: 0, boxShadow: '0 3px 10px rgba(245,158,11,0.35)' }}>Sign up free</a>
+          </div>
+        )}
 
         {/* Hero row: Continue Learning + Goal Ring */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'stretch' }}>
