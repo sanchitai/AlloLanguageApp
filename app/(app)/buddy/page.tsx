@@ -27,16 +27,20 @@ export default function BuddyPage() {
   const [loudPhrase, setLoudPhrase] = useState('')
   const [loudTrans, setLoudTrans] = useState('')
   const [cachedGender, setCachedGender] = useState<'female' | 'male' | 'neutral'>('female')
+  const [clonedVoiceId, setClonedVoiceId] = useState<string | null>(null)
+  const [useClonedVoice, setUseClonedVoice] = useState(false)
 
-  // Fetch voice gender once on mount
+  // Fetch voice gender + clone ID once on mount
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from('profiles').select('voice_gender').eq('id', user.id).single()
+      supabase.from('profiles').select('voice_gender, preferences').eq('id', user.id).single()
         .then(({ data }) => {
-          const row = data as { voice_gender?: string } | null
+          const row = data as { voice_gender?: string; preferences?: Record<string, unknown> } | null
           if (row?.voice_gender) setCachedGender(row.voice_gender as 'female' | 'male' | 'neutral')
+          const cloneId = row?.preferences?.voice_clone_id as string | undefined
+          if (cloneId) { setClonedVoiceId(cloneId); setUseClonedVoice(true) }
         })
     })
   }, [])
@@ -49,7 +53,7 @@ export default function BuddyPage() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, gender: cachedGender }),
+        body: JSON.stringify({ text, gender: cachedGender, voiceId: useClonedVoice && clonedVoiceId ? clonedVoiceId : undefined }),
       })
 
       if (!res.ok) {
@@ -141,6 +145,16 @@ export default function BuddyPage() {
             <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: '-0.015em', color: '#1A3A6B' }}>Buddy<span style={{ color: '#1A5FA8' }}>.</span></div>
             <div style={{ fontSize: 12, color: 'var(--buddy-text-dim)', marginTop: 1 }}>Live translation companion</div>
           </div>
+          {/* Voice mode toggle — only show if user has a cloned voice */}
+          {clonedVoiceId && (
+            <button
+              onClick={() => setUseClonedVoice(v => !v)}
+              title={useClonedVoice ? 'Using your cloned voice' : 'Using app default voice'}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, background: useClonedVoice ? 'var(--coral)' : 'rgba(26,95,168,0.10)', border: `1.5px solid ${useClonedVoice ? 'var(--coral)' : 'rgba(26,95,168,0.25)'}`, borderRadius: 9999, padding: '5px 10px', fontSize: 11, fontWeight: 700, color: useClonedVoice ? '#fff' : '#1A5FA8', cursor: 'pointer', transition: 'all 150ms ease', flexShrink: 0 }}>
+              <span style={{ fontSize: 13 }}>{useClonedVoice ? '🎙' : '🔊'}</span>
+              {useClonedVoice ? 'My voice' : 'App voice'}
+            </button>
+          )}
         </div>
 
         {/* Language bar */}

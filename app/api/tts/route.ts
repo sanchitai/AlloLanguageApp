@@ -6,7 +6,7 @@ export const maxDuration = 30
 
 export async function POST(request: Request) {
   try {
-    const { text, gender = 'female' } = await request.json() as { text: string; gender?: VoiceGender }
+    const { text, gender = 'female', voiceId } = await request.json() as { text: string; gender?: VoiceGender; voiceId?: string }
 
     if (!text) {
       return Response.json({ error: 'Missing text' }, { status: 400 })
@@ -40,8 +40,8 @@ export async function POST(request: Request) {
       // Cache miss — continue to generate
     }
 
-    // Generate via ElevenLabs
-    const audioBuffer = await synthesizeSpeech(text, gender)
+    // Generate via ElevenLabs — pass cloned voiceId if provided
+    const audioBuffer = await synthesizeSpeech(text, gender, voiceId)
 
     // Try to cache in Supabase Storage (best-effort)
     try {

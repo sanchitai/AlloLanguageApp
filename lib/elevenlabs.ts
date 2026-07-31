@@ -2,8 +2,8 @@ import { ElevenLabsClient } from 'elevenlabs'
 
 const elevenlabs = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY })
 
-// Best available French voices on ElevenLabs
-export const FRENCH_VOICES = {
+// Default app voices — multilingual, natural
+export const APP_VOICES = {
   female: {
     id: 'XrExE9yKIg1WjnnlVkGX', // Matilda — warm, natural
     name: 'Matilda (Female)',
@@ -18,27 +18,28 @@ export const FRENCH_VOICES = {
   },
 } as const
 
-export type VoiceGender = keyof typeof FRENCH_VOICES
+export type VoiceGender = keyof typeof APP_VOICES
 
 export async function synthesizeSpeech(
   text: string,
-  gender: VoiceGender = 'female'
+  gender: VoiceGender = 'female',
+  clonedVoiceId?: string
 ): Promise<Buffer> {
-  const voice = FRENCH_VOICES[gender]
+  // Use cloned voice if provided, otherwise use app default
+  const voiceId = clonedVoiceId ?? APP_VOICES[gender].id
 
   const audio = await elevenlabs.generate({
-    voice: voice.id,
+    voice: voiceId,
     text,
     model_id: 'eleven_multilingual_v2',
     voice_settings: {
-      stability: 0.5,
-      similarity_boost: 0.85,
+      stability: clonedVoiceId ? 0.65 : 0.50,
+      similarity_boost: clonedVoiceId ? 0.90 : 0.85,
       style: 0.1,
       use_speaker_boost: true,
     },
   })
 
-  // Convert stream to buffer
   const chunks: Buffer[] = []
   for await (const chunk of audio) {
     chunks.push(Buffer.from(chunk))
