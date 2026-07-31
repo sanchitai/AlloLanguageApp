@@ -141,18 +141,35 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
         <div
           ref={cardRef}
           style={{ width: '100%', maxWidth: 380, perspective: 1400, zIndex: 2, cursor: 'pointer' }}
-          onPointerDown={e => { setIsDragging(true); startX.current = e.clientX }}
-          onPointerMove={e => { if (!isDragging) return; setDragX(e.clientX - startX.current) }}
-          onPointerUp={() => { if (Math.abs(dragX) >= THRESHOLD) { advance(dragX > 0 ? 'right' : 'left') } else { setDragX(0) }; setIsDragging(false) }}
+          onPointerDown={e => {
+            // Don't start drag if clicking a button
+            if ((e.target as HTMLElement).closest('button')) return
+            setIsDragging(true)
+            startX.current = e.clientX
+          }}
+          onPointerMove={e => {
+            if (!isDragging) return
+            setDragX(e.clientX - startX.current)
+          }}
+          onPointerUp={() => {
+            if (!isDragging) return
+            if (Math.abs(dragX) >= THRESHOLD) {
+              advance(dragX > 0 ? 'right' : 'left')
+            } else {
+              setDragX(0)
+            }
+            setIsDragging(false)
+          }}
           onPointerCancel={() => { setDragX(0); setIsDragging(false) }}
         >
           <div style={{ width: '100%', minHeight: 430, position: 'relative', transformStyle: 'preserve-3d', transition: isDragging ? 'none' : 'transform 380ms cubic-bezier(0.34,1.10,0.64,1)', transform: `rotateY(${flipped ? 180 : 0}deg) translateX(${dragX}px) rotate(${(dragX / 300) * 14}deg)`, borderRadius: 32 }}>
 
             {/* FRONT */}
-            <div onClick={() => { if (!isDragging && Math.abs(dragX) < 5) setFlipped(true) }} style={{ position: 'absolute', inset: 0, borderRadius: 32, backfaceVisibility: 'hidden', background: card.grad, boxShadow: '0 20px 60px rgba(0,0,0,0.18)', overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 22 }}>
+            <div onClick={() => { if (!isDragging && Math.abs(dragX) < 5) setFlipped(true) }} style={{ position: 'absolute', inset: 0, borderRadius: 32, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', background: card.grad, boxShadow: '0 20px 60px rgba(0,0,0,0.18)', overflow: 'hidden', display: 'flex', flexDirection: 'column', padding: 22 }}>
               <div style={{ position: 'absolute', width: 200, height: 200, borderRadius: '50%', top: -60, right: -60, background: 'rgba(255,255,255,0.10)', pointerEvents: 'none' }} />
               <div style={{ position: 'absolute', width: 140, height: 140, borderRadius: '50%', bottom: -40, left: -40, background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', fontSize: 96, fontWeight: 900, color: 'rgba(255,255,255,0.09)', letterSpacing: '-0.03em', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none', userSelect: 'none', whiteSpace: 'nowrap' }}>{card.target}</div>
+              {/* Ghost word — no transform needed, centering via flex on parent */}
+              <div style={{ position: 'absolute', fontSize: 96, fontWeight: 900, color: 'rgba(255,255,255,0.09)', letterSpacing: '-0.03em', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none', userSelect: 'none', whiteSpace: 'nowrap', backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>{card.target}</div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
                 <div style={{ background: 'rgba(255,255,255,0.28)', border: '1px solid rgba(255,255,255,0.35)', borderRadius: 9999, padding: '5px 12px', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>
@@ -173,7 +190,7 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* BACK */}
-            <div style={{ position: 'absolute', inset: 0, borderRadius: 32, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', background: 'var(--surface)', boxShadow: '0 20px 60px rgba(0,0,0,0.18)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ position: 'absolute', inset: 0, borderRadius: 32, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)', background: 'var(--surface)', boxShadow: '0 20px 60px rgba(0,0,0,0.18)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <div style={{ background: card.band, padding: '18px 22px 16px', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
                 <div style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.12)', pointerEvents: 'none' }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -182,7 +199,11 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
                 </div>
                 <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.02em', color: '#fff', textShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>{card.native}</div>
               </div>
-              <div style={{ flex: 1, padding: 22, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} onClick={() => setFlipped(false)}>
+              <div style={{ flex: 1, padding: 22, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} onClick={e => {
+                // Only flip back if clicking the background, not a button
+                if ((e.target as HTMLElement).closest('button')) return
+                setFlipped(false)
+              }}>
                 <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 4 }}>Pronunciation</div>
                 <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: '0.05em', fontFamily: 'monospace', marginBottom: 14, color: 'var(--ink)' }}>{card.pronun}</div>
                 <button onClick={e => { e.stopPropagation(); speak(card.target) }} style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 7, background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 9999, height: 40, padding: '0 16px', fontSize: 13, fontWeight: 800, cursor: 'pointer', marginBottom: 16, boxShadow: 'var(--sh-fab)', fontFamily: 'var(--font)' }}>
@@ -193,11 +214,11 @@ export default function FlashcardsDetailPage({ params }: { params: Promise<{ id:
                 <div style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--ink-2)', lineHeight: '20px', marginBottom: 4 }}>&ldquo;{card.ex}&rdquo;</div>
                 <div style={{ fontSize: 12, color: 'var(--ink-3)', lineHeight: '18px', marginBottom: 14, flex: 1, fontWeight: 600 }}>{card.trans}</div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }} onClick={e => e.stopPropagation()}>
-                  <button onClick={() => advance('left')} style={{ flex: 1, height: 48, background: 'var(--bg)', border: '2px solid var(--divider)', borderRadius: 9999, fontSize: 13, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontFamily: 'var(--font)', color: 'var(--ink-2)' }}>
+                  <button onClick={e => { e.stopPropagation(); advance('left') }} style={{ flex: 1, height: 48, background: 'var(--bg)', border: '2px solid var(--divider)', borderRadius: 9999, fontSize: 13, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontFamily: 'var(--font)', color: 'var(--ink-2)' }}>
                     <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     Review
                   </button>
-                  <button onClick={() => advance('right')} style={{ flex: 1, height: 48, background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, boxShadow: 'var(--sh-fab)', fontFamily: 'var(--font)' }}>
+                  <button onClick={e => { e.stopPropagation(); advance('right') }} style={{ flex: 1, height: 48, background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, boxShadow: 'var(--sh-fab)', fontFamily: 'var(--font)' }}>
                     Learned
                     <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </button>
